@@ -91,7 +91,7 @@ const log = logger.connect(formatter.connect(consoleHandler, socketHandler.conne
 #### Clone the _Streams_ repository.
 
 ```bash
-git clone https://github.com/faranalytics/streams-logger.git
+git clone https://github.com/adpatter/streams-logger.git
 ```
 
 #### Change directory into the relevant example directory.

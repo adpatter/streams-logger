@@ -6,7 +6,7 @@ Streams is an intuitive and performant logger for Node.js _and_ TypeScript appli
 
 <img align="right" src="./graph.png">
 
-_Streams_ is an intuitive logger built on native Node.js streams. You can use the built-in logging components (e.g., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)) for [common logging tasks](#usage) or implement your own logging [Node](https://github.com/faranalytics/nodes) to handle a wide range of logging scenarios. _Streams_ offers a graph-like API pattern for building sophisticated logging pipelines.
+_Streams_ is an intuitive logger built on native Node.js streams. You can use the built-in logging components (e.g., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)) for [common logging tasks](#usage) or implement your own logging [Node](https://github.com/adpatter/nodes) to handle a wide range of logging scenarios. _Streams_ offers a graph-like API pattern for building sophisticated logging pipelines.
 
 ### Features
 
@@ -49,7 +49,7 @@ Logging is essentially a data transformation task. When a string is logged to th
 
 ### Node
 
-Each data transformation step in a _Streams_ logging graph is realized through a [`Node`](https://github.com/faranalytics/nodes) implementation. Each `Node` manages and represents a native Node.js stream. A `Node` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Filters, Handlers, etc.) in a _Streams_ logging graph _is a_ `Node`. Each `Node` _has a_ native Node.js stream that it manages.
+Each data transformation step in a _Streams_ logging graph is realized through a [`Node`](https://github.com/adpatter/nodes) implementation. Each `Node` manages and represents a native Node.js stream. A `Node` in a data transformation graph consumes an input, transforms or filters the data in some way, and optionally produces an output. Each component (e.g., Loggers, Formatters, Filters, Handlers, etc.) in a _Streams_ logging graph _is a_ `Node`. Each `Node` _has a_ native Node.js stream that it manages.
 
 ### Graph API pattern
 
@@ -90,7 +90,7 @@ const rotatingFileHandler = new RotatingFileHandler({
 
 Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
 
-_Streams_ uses a graph-like API pattern in order to construct a network of log Nodes. Each component in a network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, _is a_ [Node](https://github.com/faranalytics/nodes).
+_Streams_ uses a graph-like API pattern in order to construct a network of log Nodes. Each component in a network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, _is a_ [Node](https://github.com/adpatter/nodes).
 
 ```ts
 const log = logger.connect(formatter.connect(consoleHandler, rotatingFileHandler));
@@ -118,19 +118,19 @@ Output
 
 ### _An instance of logging "Hello, World!"_ <sup><sup>\</TypeScript\></sup></sup>
 
-Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/faranalytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
+Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/adpatter/streams-logger/tree/main/examples/hello_world) example for a working implementation.
 
 ### _Log to a file and the console_ <sup><sup>\</TypeScript\></sup></sup>
 
-Please see the [_Log to a File and the Console_](https://github.com/faranalytics/streams-logger/tree/main/examples/log_to_a_file_and_the_console) example that demonstrates how to log to a file and the console using different `Formatters`.
+Please see the [_Log to a File and the Console_](https://github.com/adpatter/streams-logger/tree/main/examples/log_to_a_file_and_the_console) example that demonstrates how to log to a file and the console using different `Formatters`.
 
 ### _A network connected streams logging graph_ <sup><sup>\</TypeScript\></sup></sup>
 
-Please see the [_Network Connected **Streams** Logging Graph_](https://github.com/faranalytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network.
+Please see the [_Network Connected **Streams** Logging Graph_](https://github.com/adpatter/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network.
 
 ### _Use **Streams** in a Node.js project (without type safety)_ <sup><sup>\</Node.js\></sup></sup>
 
-Please see the [_Use **Streams** in a Node.js Project_](https://github.com/faranalytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project _without_ type checks.
+Please see the [_Use **Streams** in a Node.js Project_](https://github.com/adpatter/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project _without_ type checks.
 
 ## Formatting
 
@@ -671,7 +671,7 @@ root.connect(formatter.connect(consoleHandler));
 
 ### How to implement a custom _Streams_ data transformation node
 
-_Streams_ is built on the type-safe [Nodes](https://github.com/faranalytics/nodes) graph API framework. This means that any Nodes `Node` may be incorporated into your logging graph provided that it meets the contextual type requirements. In order to implement a _Streams_ data transformation `Node`, subclass the `Node` class, and provide the appropriate _Streams_ defaults to the stream constructor.
+_Streams_ is built on the type-safe [Nodes](https://github.com/adpatter/nodes) graph API framework. This means that any Nodes `Node` may be incorporated into your logging graph provided that it meets the contextual type requirements. In order to implement a _Streams_ data transformation `Node`, subclass the `Node` class, and provide the appropriate _Streams_ defaults to the stream constructor.
 
 For example, the somewhat contrived `LogContextToBuffer` implementation transforms the `message` contained in a `LogContext` to a `Buffer`; the graph pipeline streams the message to `process.stdout`.
 
@@ -722,7 +722,7 @@ log.warn("Hello, World!");
 Hello, World!
 ```
 
-_Streams_ provides a few examples of [handlers](https://github.com/faranalytics/streams-logger/tree/main/src/handlers), which you can use for modeling your data transformation `Node`.
+_Streams_ provides a few examples of [handlers](https://github.com/adpatter/streams-logger/tree/main/src/handlers), which you can use for modeling your data transformation `Node`.
 
 ### How to consume a Readable, Writable, Duplex, or Transform Node.js stream
 
@@ -852,7 +852,7 @@ Excerpted from [Semantic Versioning 2.0.0](https://semver.org/):
 #### Clone the repository.
 
 ```bash
-git clone https://github.com/faranalytics/streams-logger.git
+git clone https://github.com/adpatter/streams-logger.git
 ```
 
 #### Change directory into the root of the repository.
@@ -875,6 +875,6 @@ npm test verbose=false
 
 ## Support
 
-If you have a feature request or run into any issues, feel free to submit an [issue](https://github.com/faranalytics/streams-logger/issues) or start a [discussion](https://github.com/faranalytics/streams-logger/discussions). You’re also welcome to reach out directly to one of the authors.
+If you have a feature request or run into any issues, feel free to submit an [issue](https://github.com/adpatter/streams-logger/issues) or start a [discussion](https://github.com/adpatter/streams-logger/discussions). You’re also welcome to reach out directly to one of the authors.
 
 - [Adam Patterson](https://github.com/adamjpatterson)
