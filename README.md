@@ -10,6 +10,7 @@ _Streams_ is an intuitive logger built on native Node.js streams. You can use th
 
 ### Features
 
+- 0 dependency logging framework based on native Node.js streams.
 - A library of commonly used logging components: [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class).
 - A rich selection of [contextual data](#log-context-properties) (e.g., module name, function name, line number, etc.) for augmenting log messages.
 - A type-safe graph-like API pattern for constructing sophisticated [logging graphs](#graph-api-pattern).
@@ -875,6 +876,6 @@ npm test verbose=false
 
 ## Support
 
-If you have a feature request or run into any issues, feel free to submit an [issue](https://github.com/adpatter/streams-logger/issues) or start a [discussion](https://github.com/adpatter/streams-logger/discussions). You’re also welcome to reach out directly to one of the authors.
+For feature requests or issues, please open an [issue](https://github.com/adpatter/streams-logger/issues) or contact the authors.
 
 - [Adam Patterson](https://github.com/adpatter)
