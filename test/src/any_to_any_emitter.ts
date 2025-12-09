@@ -4,30 +4,33 @@ import { Config, Node } from "streams-logger";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class AnyToAnyEmitter<InT = any, OutT = any> extends Node<InT, OutT> {
-
   public emitter: events.EventEmitter;
   public writableCount: number;
 
   constructor(streamOptions?: stream.TransformOptions) {
-    super(new stream.Transform({
-      ...streamOptions, ...{
-        objectMode: true,
-        transform: (chunk: InT, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-          try {
-            this.emitter.emit("data", chunk);
-            callback(null, chunk);
-          }
-          catch (err) {
-            if (err instanceof Error) {
-              callback(err);
+    super(
+      new stream.Transform({
+        ...streamOptions,
+        ...{
+          objectMode: true,
+          transform: (chunk: InT, encoding: BufferEncoding, callback: stream.TransformCallback) => {
+            try {
+              this.emitter.emit("data", chunk);
+              callback(null, chunk);
+            } catch (err) {
+              if (err instanceof Error) {
+                callback(err);
+              }
             }
-          }
-        }
-      }
-    }));
+          },
+        },
+      })
+    );
 
     this.emitter = new events.EventEmitter();
-    this._stream.once("error", (err: Error) => { this.emitter.emit("error", err); });
+    this._stream.once("error", (err: Error) => {
+      this.emitter.emit("error", err);
+    });
     this.writableCount = 0;
     this._stream.on("pipe", () => {
       this.writableCount = this.writableCount + 1;
@@ -38,7 +41,9 @@ export class AnyToAnyEmitter<InT = any, OutT = any> extends Node<InT, OutT> {
   }
 
   public write(data: InT, encoding?: BufferEncoding): void {
-    super._write(data, encoding).catch((err: unknown) => { Config.errorHandler(err instanceof Error ? err : new Error()); });
+    super._write(data, encoding).catch((err: unknown) => {
+      Config.errorHandler(err instanceof Error ? err : new Error());
+    });
   }
 
   get stream(): stream.Readable | stream.Writable {

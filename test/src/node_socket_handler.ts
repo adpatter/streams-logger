@@ -11,7 +11,6 @@ export interface NodeSocketHandlerOptions {
 }
 
 export class NodeSocketHandler<InT, OutT> extends Node<InT, OutT> {
-
   public ingressQueue: Buffer;
   public egressQueue: Buffer;
   public messageSize: number | null;
@@ -21,34 +20,35 @@ export class NodeSocketHandler<InT, OutT> extends Node<InT, OutT> {
   public socket: net.Socket;
 
   constructor({ socket, reviver, replacer, space }: NodeSocketHandlerOptions, streamOptions?: stream.DuplexOptions) {
-    super(new stream.Duplex({
-      ...streamOptions, ...{
-        writableObjectMode: true,
-        readableObjectMode: true,
-        read: (size: number) => {
-          this.push();
+    super(
+      new stream.Duplex({
+        ...streamOptions,
+        ...{
+          writableObjectMode: true,
+          readableObjectMode: true,
+          read: (size: number) => {
+            this.push();
+          },
+          write: (chunk: InT, _encoding: BufferEncoding, callback: stream.TransformCallback) => {
+            try {
+              const data = this.serializeMessage(chunk);
+              const size = Buffer.alloc(6, 0);
+              size.writeUIntBE(data.length + 6, 0, 6);
+              const buf = Buffer.concat([size, data]);
+              if (!this.socket.write(buf)) {
+                this.socket.once("drain", callback);
+              } else {
+                callback();
+              }
+            } catch (err) {
+              if (err instanceof Error) {
+                callback(err);
+              }
+            }
+          },
         },
-        write: (chunk: InT, _encoding: BufferEncoding, callback: stream.TransformCallback) => {
-          try {
-            const data = this.serializeMessage(chunk);
-            const size = Buffer.alloc(6, 0);
-            size.writeUIntBE(data.length + 6, 0, 6);
-            const buf = Buffer.concat([size, data]);
-            if (!this.socket.write(buf)) {
-              this.socket.once("drain", callback);
-            }
-            else {
-              callback();
-            }
-          }
-          catch (err) {
-            if (err instanceof Error) {
-              callback(err);
-            }
-          }
-        }
-      }
-    }));
+      })
+    );
 
     this.push = this.push.bind(this);
     this.ingressQueue = Buffer.allocUnsafe(0);
@@ -64,11 +64,10 @@ export class NodeSocketHandler<InT, OutT> extends Node<InT, OutT> {
     });
   }
 
-  public push = ()=> {
+  public push = () => {
     if (this.ingressQueue.length > 6) {
       this.messageSize = this.ingressQueue.readUintBE(0, 6);
-    }
-    else {
+    } else {
       this.socket.once("data", this.push);
       return;
     }
@@ -80,8 +79,7 @@ export class NodeSocketHandler<InT, OutT> extends Node<InT, OutT> {
       if (this._stream instanceof stream.Readable) {
         this._stream.push(message);
       }
-    }
-    else {
+    } else {
       this.socket.once("data", this.push);
     }
   };

@@ -7,27 +7,26 @@ export interface AnyTransformToAnyOptions<InT, OutT> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class AnyTransformToAny<InT = any, OutT = any> extends Node<InT, OutT> {
-
   public transform: (chunk: InT) => Promise<OutT> | OutT;
   public writableCount: number;
   constructor(options: AnyTransformToAnyOptions<InT, OutT>, streamOptions?: stream.TransformOptions) {
-    super(new stream.Transform({
-      ...streamOptions,
-      writableObjectMode: true,
-      readableObjectMode: true,
-      transform: (chunk: InT, encoding: BufferEncoding, callback: stream.TransformCallback) => {
-        void (async () => {
-          try {
-            callback(null, await this.transform(chunk));
-          }
-          catch (err) {
-            if (err instanceof Error) {
-              callback(err);
+    super(
+      new stream.Transform({
+        ...streamOptions,
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (chunk: InT, encoding: BufferEncoding, callback: stream.TransformCallback) => {
+          void (async () => {
+            try {
+              callback(null, await this.transform(chunk));
+            } catch (err) {
+              if (err instanceof Error) {
+                callback(err);
+              }
             }
-          }
-        })();
-      }
-    })
+          })();
+        },
+      })
     );
 
     this.transform = options.transform;

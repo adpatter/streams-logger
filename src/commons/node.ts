@@ -12,8 +12,7 @@ export interface NodeOptions {
 }
 
 export class Node<InT, OutT, StreamT extends Writable | Readable = Writable | Readable> {
-
-  static [$streams] = new WeakSet<Writable | Readable>;
+  static [$streams] = new WeakSet<Writable | Readable>();
 
   protected _stream: StreamT;
   protected _queue: InT[];
@@ -31,7 +30,6 @@ export class Node<InT, OutT, StreamT extends Writable | Readable = Writable | Re
     Node[$streams].add(stream);
 
     if (this._stream instanceof Writable) {
-       
       this._stream.on("pipe", (readable: Readable) => {
         this._stream.setMaxListeners(this._stream.getMaxListeners() + 1);
         if (Node[$streams].has(readable)) {
@@ -87,25 +85,27 @@ export class Node<InT, OutT, StreamT extends Writable | Readable = Writable | Re
   }
 
   protected async _write(data: InT, encoding?: NodeJS.BufferEncoding): Promise<void> {
-    if (this._stream.closed || !(this._stream instanceof Writable))
-      return;
+    if (this._stream.closed || !(this._stream instanceof Writable)) return;
 
     if (this._stream.writableNeedDrain) {
       this._queue.push(data);
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      this._size += this._stream.writableObjectMode ? 1 : (data as string | Buffer).length ?? (data as DataView).byteLength ?? 0;
+      this._size += this._stream.writableObjectMode
+        ? 1
+        : ((data as string | Buffer).length ?? (data as DataView).byteLength ?? 0);
       return;
     }
 
-    if (this._stream.write(data, encoding ?? "utf-8"))
-      return;
+    if (this._stream.write(data, encoding ?? "utf-8")) return;
 
     await once(this._stream, "drain");
 
     while (this._queue.length) {
       const data = this._queue.shift();
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      this._size -= this._stream.writableObjectMode ? 1 : (data as string | Buffer).length ?? (data as DataView).byteLength ?? 0;
+      this._size -= this._stream.writableObjectMode
+        ? 1
+        : ((data as string | Buffer).length ?? (data as DataView).byteLength ?? 0);
       if (!this._stream.write(data, encoding ?? "utf-8")) {
         await once(this._stream, "drain");
       }

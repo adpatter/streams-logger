@@ -3,24 +3,23 @@ import { Config, Node } from "streams-logger";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class AnyToVoid<InT = any> extends Node<InT, never> {
-
   public writableCount: number;
 
   constructor(streamOptions?: stream.WritableOptions) {
-    super(new stream.Writable({
-      ...streamOptions,
-      objectMode: true,
-      write(chunk: InT, encoding: BufferEncoding, callback: (error?: Error | null) => void) {
-        try {
-          callback();
-        }
-        catch (err) {
-          if (err instanceof Error) {
-            callback(err);
+    super(
+      new stream.Writable({
+        ...streamOptions,
+        objectMode: true,
+        write(chunk: InT, encoding: BufferEncoding, callback: (error?: Error | null) => void) {
+          try {
+            callback();
+          } catch (err) {
+            if (err instanceof Error) {
+              callback(err);
+            }
           }
-        }
-      }
-    })
+        },
+      })
     );
 
     this.writableCount = 0;
@@ -33,7 +32,9 @@ export class AnyToVoid<InT = any> extends Node<InT, never> {
   }
 
   public write(data: InT, encoding?: BufferEncoding): void {
-    super._write(data, encoding).catch((err: unknown) => { Config.errorHandler(err instanceof Error ? err : new Error()); });
+    super._write(data, encoding).catch((err: unknown) => {
+      Config.errorHandler(err instanceof Error ? err : new Error());
+    });
   }
 
   get stream(): stream.Readable | stream.Writable {
