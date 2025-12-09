@@ -1,7 +1,8 @@
 import * as net from "node:net";
 import * as fs from "node:fs";
 import { once } from "node:events";
-import { test, after, describe } from "node:test";
+import { PassThrough } from "node:stream";
+import { test, after, suite } from "node:test";
 import * as assert from "node:assert";
 import {
   Logger,
@@ -23,13 +24,12 @@ import { AnyTemporalToAny } from "./any_temporal_to_any.js";
 import { StringToBuffer } from "./string_to_buffer.js";
 import { BufferToString } from "./buffer_to_string.js";
 import { NodeSocketHandler } from "./node_socket_handler.js";
-import { PassThrough } from "node:stream";
 
 Config.debug = process.argv.some((value: string) => value.search(/verbose=true/) == 0);
 
 const DATA = "0123456789";
 
-await describe("Test the integrity of data propagation and error handling.", async () => {
+await suite("Test the integrity of data propagation and error handling.", async () => {
   const temporalNode = new AnyTemporalToAny<string, string>({ time: 0 });
   const stringToBuffer = new StringToBuffer();
   const bufferToString = new BufferToString();
@@ -115,7 +115,7 @@ await describe("Test the integrity of data propagation and error handling.", asy
   });
 });
 
-await describe("Log a string that passes through a SocketHandler.", async () => {
+await suite("Log a string that passes through a SocketHandler.", async () => {
   const serverRotatingFileHandler = new RotatingFileHandler({ path: "server.log" });
   const serverFormatter = new Formatter({ format: ({ message }) => message });
   const formatterNode = serverFormatter.connect(serverRotatingFileHandler);
@@ -162,7 +162,7 @@ await describe("Log a string that passes through a SocketHandler.", async () => 
     }
   });
 
-  await describe("Test error handling.", async () => {
+  await suite("Test error handling.", async () => {
     const logger = new Logger({ name: "main", level: SyslogLevel.DEBUG });
     const formatter = new Formatter({
       format: ({ isotime, message, name, level, func, line, col }: LogContext<string, SyslogLevelT>) =>
@@ -210,7 +210,7 @@ await describe("Log a string that passes through a SocketHandler.", async () => 
   });
 });
 
-await describe("Log an object that passes through a SocketHandler.", async () => {
+await suite("Log an object that passes through a SocketHandler.", async () => {
   class Greeter {
     public greeting: string;
     public isotime?: string;
@@ -281,7 +281,7 @@ await describe("Log an object that passes through a SocketHandler.", async () =>
   });
 });
 
-await describe("Log a string that passes through a rotating file handler.", async () => {
+await suite("Log a string that passes through a rotating file handler.", async () => {
   const MAX_SIZE = (1e5 * 50) / 5;
   const logger = new Logger<string>({ name: "main" });
   const formatter = new Formatter<string, string>({
