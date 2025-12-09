@@ -10,7 +10,7 @@ _Streams_ is an intuitive logger built on native Node.js streams. You can use th
 
 ### Features
 
-- A _zero-dependency_ logging framework based on native Node.js streams.
+- A **_zero-dependency_** logging framework based on native Node.js streams.
 - A library of commonly used logging components: [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class).
 - A rich selection of [contextual data](#log-context-properties) (e.g., module name, function name, line number, etc.) for augmenting log messages.
 - A type-safe graph-like API pattern for constructing sophisticated [logging graphs](#graph-api-pattern).
@@ -91,7 +91,7 @@ const rotatingFileHandler = new RotatingFileHandler({
 
 Connect the Logger to the Formatter and connect the Formatter to the ConsoleHandler and RotatingFileHandler.
 
-_Streams_ uses a graph-like API pattern in order to construct a network of Nodes for your logging task. Each component in a network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, _is a_ Node.
+_Streams_ uses a graph-like API pattern in order to construct a network of `Node`s for your logging task. Each component in a network, in this case the `Logger`, the `Formatter`, and the `ConsoleHandler` and `RotatingFileHandler`, _is a_ Node.
 
 ```ts
 const log = logger.connect(formatter.connect(consoleHandler, rotatingFileHandler));
@@ -447,7 +447,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - level `<KeysUppercase<LevelT>>` An uppercase string representing the log level.
   - stack `<string>` An optional stack trace.
 
-A `LogContext` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call. All _Streams_ Nodes take a `LogContext` as an input and emit a `LogContext` as an output.
+A `LogContext` is instantiated each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call. All _Streams_ `Node`s take a `LogContext` as an input and emit a `LogContext` as an output.
 
 The `LogContext` is passed as the single argument to the [format function](#formatting) of the `Formatter`; information about the environment can be extracted from the `LogContext` in order to format the logged message. The following properties will be available to the `format` function depending on the setting of `Config.captureStackTrace` and `Config.captureISOTime`. Please see the [Log Context Data](#log-context-data) table for details.
 
@@ -746,7 +746,7 @@ const socketHandler = new Node<Buffer, Buffer>(socket); // Connect this `Node` t
 
 ### Tune the highWaterMark
 
-_Streams_ `Node` implementations use the native Node.js stream API for message propagation. You have the option of tuning the Node.js stream `highWaterMark` to your specific needs - keeping in mind memory constraints. You can set a `highWaterMark` using [`Config.highWaterMark`](#the-streams-config-settings-object) and [`Config.highWaterMarkObjectMode`](#the-streams-config-settings-object) that will apply to Nodes in the _Streams_ library. Alternatively, the `highWaterMark` can be set in the constructor of each `Node`; please see the [API](#api) for instructions on how to do this.
+_Streams_ `Node` implementations use the native Node.js stream API for message propagation. You have the option of tuning the Node.js stream `highWaterMark` to your specific needs - keeping in mind memory constraints. You can set a `highWaterMark` using [`Config.highWaterMark`](#the-streams-config-settings-object) and [`Config.highWaterMarkObjectMode`](#the-streams-config-settings-object) that will apply to `Node`s in the _Streams_ library. Alternatively, the `highWaterMark` can be set in the constructor of each `Node`; please see the [API](#api) for instructions on how to do this.
 
 In this example, the `highWaterMark` of ObjectMode streams and Buffer mode streams is artificially set to `1e6` objects and `1e6` bytes.
 
@@ -822,7 +822,7 @@ However, for typical error logging applications or debugging scenarios the defau
 
 _Streams_ respects backpressure by queueing messages while the stream is draining. You can set a limit on how large the message queue may grow by specifying a `queueSizeLimit` in the Logger constructor options. If a `queueSizeLimit` is specified and if it is exceeded, the `Logger` will throw a `QueueSizeLimitExceededError`.
 
-**For typical logging applications setting a `queueSizeLimit` isn't necessary.** However, if an uncooperative stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted. By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending Nodes in your graph.
+**For typical logging applications setting a `queueSizeLimit` isn't necessary.** However, if an uncooperative stream peer reads data at a rate that is slower than the rate that data is written to the stream, data may buffer until memory is exhausted. By setting a `queueSizeLimit` you can effectively respond to subversive stream peers and disconnect offending `Node`s in your graph.
 
 If you have a _cooperating_ stream that is backpressuring, you can either set a default `highWaterMark` appropriate to your application or increase the `highWaterMark` on the specific stream in order to mitigate drain events.
 
