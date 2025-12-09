@@ -1,6 +1,6 @@
 import * as stream from "node:stream";
 import { LogContext } from "../commons/log_context.js";
-import { Node } from "@farar/nodes";
+import { Node } from "../commons/node.js";
 import { SyslogLevelT } from "../commons/syslog.js";
 import { Config } from "../index.js";
 

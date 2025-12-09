@@ -2,7 +2,7 @@ import * as net from "node:net";
 import * as stream from "node:stream";
 import { LogContext } from "../commons/log_context.js";
 import { SyslogLevel, SyslogLevelT } from "../commons/syslog.js";
-import { Node } from "@farar/nodes";
+import { Node } from "../commons/node.js";
 import { Config } from "../index.js";
 
 export interface SocketHandlerOptions {

@@ -3,7 +3,7 @@ import * as stream from "node:stream";
 import * as threads from "node:worker_threads";
 import Config from "../commons/config.js";
 import { LogContext } from "../commons/log_context.js";
-import { Node } from "@farar/nodes";
+import { Node } from "../commons/node.js";
 import { SyslogLevel, SyslogLevelT } from "../commons/syslog.js";
 import { KeysUppercase } from "../commons/types.js";
 import { QueueSizeLimitExceededError } from "../commons/errors.js";

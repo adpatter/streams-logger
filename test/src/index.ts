@@ -12,8 +12,12 @@ import {
   Formatter,
   SyslogLevel,
   SyslogLevelT,
+  Config,
+  AnyToAnyEmitter,
+  AnyToEmitter,
+  AnyTransformToAny,
+  AnyToVoid,
 } from "streams-logger";
-import { Config, AnyToAnyEmitter, AnyToEmitter, AnyTransformToAny, AnyToVoid } from "@farar/nodes";
 
 Config.debug = process.argv.some((value: string) => value.search(/verbose=true/) == 0);
 

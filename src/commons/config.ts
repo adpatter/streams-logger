@@ -1,18 +1,27 @@
 import * as stream from "node:stream";
+import { EventEmitter } from "node:events";
 
 export type ErrorHandler = (err: Error, ...params: unknown[]) => void;
 
-class Config {
+interface ConfigEvents {
+  errorHandler: [ErrorHandler];
+  debug: [boolean];
+}
+
+class Config extends EventEmitter<ConfigEvents> {
   protected _highWaterMark?: number;
   protected _highWaterMarkObjectMode?: number;
+  protected _debug: boolean;
   public captureStackTrace: boolean;
   public captureISOTime: boolean;
   public errorHandler: ErrorHandler;
 
   constructor() {
+    super();
     this.captureStackTrace = true;
     this.captureISOTime = true;
     this.errorHandler = console.error;
+    this._debug = false;
   }
 
   public get highWaterMark(): number {
@@ -49,6 +58,15 @@ class Config {
       readableHighWaterMark: readableObjectMode ? this._highWaterMarkObjectMode : this.highWaterMark,
     };
   };
+
+  get debug() {
+    return this._debug;
+  }
+
+  set debug(debug: boolean) {
+    this._debug = debug;
+    this.emit("debug", this._debug);
+  }
 }
 
 export default new Config();

@@ -4,7 +4,7 @@ import * as fsp from "node:fs/promises";
 import * as stream from "node:stream";
 import { once } from "node:events";
 import { LogContext } from "../commons/log_context.js";
-import { Node } from "@farar/nodes";
+import { Node } from "../commons/node.js";
 import { SyslogLevel, SyslogLevelT } from "../commons/syslog.js";
 import { Config } from "../index.js";
 
