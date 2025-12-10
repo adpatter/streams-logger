@@ -51,6 +51,10 @@ export class SocketHandler<MessageT = string> extends Node<
               }
               if (SyslogLevel[logContext.level] <= this.level) {
                 const data = this._serializeMessage(logContext);
+                if (data.length == 0){
+                  callback();
+                  return;
+                }
                 const size = Buffer.alloc(6, 0);
                 size.writeUIntBE(data.length + 6, 0, 6);
                 const buf = Buffer.concat([size, data]);
@@ -58,9 +62,11 @@ export class SocketHandler<MessageT = string> extends Node<
                   this._socket.once("drain", callback);
                 } else {
                   callback();
+                  return;
                 }
               } else {
                 callback();
+                return;
               }
             } catch (err) {
               const error = err instanceof Error ? err : new Error(String(err));
@@ -78,6 +84,9 @@ export class SocketHandler<MessageT = string> extends Node<
     this._ingressQueue = Buffer.allocUnsafe(0);
     this._messageSize = null;
     this._socket = socket;
+    if (this._socket.listeners("error").length == 0) {
+      this._socket.on("error", Config.errorHandler);
+    }
     this._socket.on("data", (data: Buffer) => {
       this._ingressQueue = Buffer.concat([this._ingressQueue, data]);
     });
@@ -103,6 +112,7 @@ export class SocketHandler<MessageT = string> extends Node<
       this._socket.once("data", () => {
         this._push();
       });
+      return;
     }
   };
 
