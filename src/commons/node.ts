@@ -1,8 +1,8 @@
 import { Readable, Writable } from "node:stream";
-import { once } from "node:events";
 import Config from "./config.js";
 import { ErrorHandler } from "./config.js";
 import * as crypto from "node:crypto";
+import { race } from "./utils.js";
 
 const $streams = Symbol("nodes");
 
@@ -85,9 +85,12 @@ export class Node<InT, OutT, StreamT extends Writable | Readable = Writable | Re
   }
 
   protected async _write(data: InT, encoding?: NodeJS.BufferEncoding): Promise<void> {
-    if (this._stream.closed || !(this._stream instanceof Writable)) return;
+    if (this._stream.destroyed || this._stream.closed || !(this._stream instanceof Writable)) {
+      throw new Error("The stream is not writable.");
+    }
 
     if (this._stream.writableNeedDrain) {
+      // The call that sets writableNeedDrain is also awaiting "drain", so queued items flush on that await.
       this._queue.push(data);
       this._size += this._stream.writableObjectMode
         ? 1
@@ -98,7 +101,12 @@ export class Node<InT, OutT, StreamT extends Writable | Readable = Writable | Re
 
     if (this._stream.write(data, encoding ?? "utf-8")) return;
 
-    await once(this._stream, "drain");
+    const result = await race(this._stream, ["drain", "close", "finish", "error"]);
+    if (result.event != "drain") {
+      this._queue.length = 0;
+      this._size = 0;
+      throw result.reason instanceof Error ? result.reason : new Error("The stream is not writable.");
+    }
 
     while (this._queue.length) {
       const data = this._queue.shift();
@@ -107,7 +115,12 @@ export class Node<InT, OutT, StreamT extends Writable | Readable = Writable | Re
         : // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           ((data as string | Buffer).length ?? (data as DataView).byteLength ?? 0);
       if (!this._stream.write(data, encoding ?? "utf-8")) {
-        await once(this._stream, "drain");
+        const result = await race(this._stream, ["drain", "close", "finish", "error"]);
+        if (result.event != "drain") {
+          this._queue.length = 0;
+          this._size = 0;
+          throw result.reason instanceof Error ? result.reason : new Error("The stream is not writable.");
+        }
       }
     }
   }
