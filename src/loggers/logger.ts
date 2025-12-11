@@ -67,6 +67,7 @@ export abstract class BaseLogger<MessageT = string> extends Node<
         hostname: os.hostname(),
       });
       if (this._captureStackTrace) {
+        logContext.capture = new Error();
         Error.captureStackTrace(logContext.capture, this[$log]);
         logContext.parseStackTrace();
       }

@@ -43,7 +43,7 @@ export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT,
   public pid?: number;
   public hostname?: string;
   public threadid?: number;
-  public capture: Error;
+  public capture?: Error;
   public metadata?: unknown;
   public label?: string;
 
@@ -51,7 +51,7 @@ export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT,
     this.message = options.message;
     this.name = options.name;
     this.level = options.level;
-    this.capture = options.capture ?? new Error();
+    this.capture = options.capture;
     this.func = options.func;
     this.url = options.url;
     this.line = options.line;
@@ -71,7 +71,7 @@ export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT,
   }
 
   public parseStackTrace = (depth?: number): void => {
-    if (this.capture.stack) {
+    if (this.capture?.stack) {
       const regex = depth
         ? RegExp(
             `^${"[^\\n]*\\n".repeat(
