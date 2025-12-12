@@ -4,7 +4,7 @@ Streams is an intuitive and performant logger for Node.js _and_ TypeScript appli
 
 ## Introduction
 
-<img align="right" src="./graph.png">
+<img align="right" src="./graph-stylized.png" width="300px">
 
 _Streams_ is an intuitive logger built on native Node.js streams. You can use the built-in logging components (e.g., the [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class)) for [common logging tasks](#usage) or implement your own logging [Node](#how-to-implement-a-custom-streams-data-transformation-node) to handle a wide range of logging scenarios. _Streams_ offers a graph-like API pattern for building sophisticated logging pipelines.
 
