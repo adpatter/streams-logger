@@ -638,6 +638,10 @@ Output
 
 _Streams_ uses Node.js streams for message propagation. Node.js represents sockets as streams; hence, sockets are a natural extension of a _Streams_ logging graph. For example, you may choose to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-typescript) example for a working implementation.
 
+### Payload size limit
+
+_Streams_ enforces a size limit on the serialized message payload. You can specify a restrictive payload size limit in the `SocketHandlerOptions` passed to the constructor of the `SocketHandler`. The default is `1e6` bytes.
+
 ### Security
 
 The `SocketHandler` options take a socket instance as an argument. The `net.Server` that produces this socket may be configured however you choose. You can encrypt the data sent over TCP connections and authenticate clients by configuring your `net.Server` accordingly.
