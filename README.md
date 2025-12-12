@@ -411,6 +411,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - reviver `<(this: unknown, key: string, value: unknown) => unknown>` An optional reviver for `JSON.parse`.
   - replacer `<(this: unknown, key: string, value: unknown) => unknown>` An optional replacer for `JSON.stringify`.
   - space `<string | number>` An optional space specification for `JSON.stringify`.
+  - payloadSizeLimit `<number>` An optional limit on the size of a serialized log message in bytes. **Default: `1e6`**
 - streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream. You can use `DuplexOptions` to set a `highWaterMark` on the `SocketHandler`.
 
 Use a `SocketHandler` in order to connect _Streams_ graphs over the network. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-typescript) example for instructions on how to use a `SocketHandler` in order to connect _Streams_ logging graphs over the network.
