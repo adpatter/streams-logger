@@ -49,8 +49,8 @@ export abstract class BaseLogger<MessageT = string> extends Node<
     this._queueSizeLimit = queueSizeLimit;
     this._captureISOTime = captureISOTime ?? Config.captureISOTime;
     this._captureStackTrace = captureStackTrace ?? Config.captureStackTrace;
-    if (parent !== null) {
-      this.connect(parent ?? root);
+    if (parent) {
+      this.connect(parent);
     }
   }
 
