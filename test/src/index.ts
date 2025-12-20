@@ -261,6 +261,22 @@ await suite("Log an object that passes through a SocketHandler.", async () => {
     assert.strictEqual((await result)[0].message.greeting, greeter.greeting);
   });
 
+  await test("Log a `Greeter` object and assert that the anonymous arrow function name was captured.", async () => {
+    const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }, SyslogLevelT>[]>;
+    (() => {
+      log.warn(greeter);
+    })();
+    assert.strictEqual((await result)[0].func, undefined);
+  });
+
+  await test("Log a `Greeter` object and assert that anonymous function name was captured.", async () => {
+    const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }, SyslogLevelT>[]>;
+    (function () {
+      log.warn(greeter);
+    })();
+    assert.strictEqual((await result)[0].func, undefined);
+  });
+
   await test("Log a `Greeter` object and assert that the function name was captured.", async () => {
     const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }, SyslogLevelT>[]>;
     (function sayHello() {
