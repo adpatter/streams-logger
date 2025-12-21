@@ -31,6 +31,11 @@ export class ConsoleHandlerWritable<MessageT> extends stream.Writable {
         return;
       }
 
+      if (process.stderr.closed) {
+        callback(process.stderr.errored ?? new Error("The `Writable` closed."));
+        return;
+      }
+
       if (SyslogLevel[logContext.level] > this[$level]) {
         callback();
         return;
