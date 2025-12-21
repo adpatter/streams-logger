@@ -14,7 +14,7 @@ export interface BaseLoggerOptions<MessageT> {
   level?: SyslogLevel;
   name?: string;
   queueSizeLimit?: number;
-  parent?: Logger<MessageT> | null;
+  parent?: Logger<MessageT>;
   captureStackTrace?: boolean;
   captureISOTime?: boolean;
 }
@@ -143,4 +143,4 @@ export class Logger<MessageT = string> extends BaseLogger<MessageT> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const root = new Logger<any>({ name: "root", parent: null });
+export const root = new Logger<any>({ name: "root" });
