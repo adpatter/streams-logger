@@ -83,6 +83,8 @@ export class Node<InT, OutT, StreamT extends Writable | Readable = Writable | Re
       throw new Error("The stream is not writable.");
     }
 
+    // Only terminal nodes should call Node._write; in that case this Node owns the stream,
+    // so the in-flight drain waiter will flush _queue.
     if (this._stream.writableNeedDrain) {
       // The call that sets writableNeedDrain is also awaiting "drain", so queued items flush on that await.
       this._queue.push(data);
