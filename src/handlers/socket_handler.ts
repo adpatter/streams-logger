@@ -113,51 +113,60 @@ export class SocketHandler<MessageT = string> extends Node<
   }
 
   protected _push = (): void => {
-    if (this._socket.isPaused()) {
-      if (this._ingressQueueThreshold) {
-        if (this._ingressQueue.length < this._ingressQueueThreshold) {
+    try {
+      if (this._socket.isPaused()) {
+        if (this._ingressQueueThreshold) {
+          if (this._ingressQueue.length < this._ingressQueueThreshold) {
+            this._socket.resume();
+          }
+        } else {
           this._socket.resume();
         }
-      } else {
-        this._socket.resume();
       }
-    }
-    if (this._ingressQueue.length < 6) {
-      this._socket.once("data", this._push);
-      return;
-    }
-    const messageSize = this._ingressQueue.readUintBE(0, 6);
-    if (messageSize < 6) {
-      this._stream.destroy(new Error(`The frame length is invalid: ${messageSize.toString()}`));
-      return;
-    }
-    if (this._ingressQueueThreshold && messageSize > this._ingressQueueThreshold) {
-      this._stream.destroy(
-        new Error(`The message size exceeded the ingress queue threshold: ${this._ingressQueueThreshold.toString()}`)
-      );
-      return;
-    }
-    if (this._ingressQueue.length < messageSize) {
-      this._socket.once("data", this._push);
-      return;
-    }
-    if (messageSize == 6) {
-      this._ingressQueue = this._ingressQueue.subarray(6);
-      this._push();
-      return;
-    }
-    if (messageSize - 6 > this._payloadSizeLimit) {
-      this._stream.destroy(new Error(`The payload size limit was exceeded: ${this._payloadSizeLimit.toString()}`));
-      return;
-    }
-    const buf = this._ingressQueue.subarray(6, messageSize);
-    this._ingressQueue = this._ingressQueue.subarray(messageSize, this._ingressQueue.length);
-    const message = this._deserializeMessage(buf);
-    if (this._stream instanceof stream.Readable) {
-      if (!this._stream.push(message)) {
-        this._socket.pause();
+      if (this._ingressQueue.length < 6) {
+        this._socket.once("data", this._push);
         return;
       }
+      const messageSize = this._ingressQueue.readUintBE(0, 6);
+      if (messageSize - 6 > this._payloadSizeLimit) {
+        this._stream.destroy(new Error(`The payload size limit was exceeded: ${this._payloadSizeLimit.toString()}`));
+        this._socket.destroy();
+        return;
+      }
+      if (messageSize < 6) {
+        this._stream.destroy(new Error(`The frame length is invalid: ${messageSize.toString()}`));
+        return;
+      }
+      if (this._ingressQueueThreshold && messageSize > this._ingressQueueThreshold) {
+        this._stream.destroy(
+          new Error(`The message size exceeded the ingress queue threshold: ${this._ingressQueueThreshold.toString()}`)
+        );
+        return;
+      }
+      if (this._ingressQueue.length < messageSize) {
+        this._socket.once("data", this._push);
+        return;
+      }
+      if (messageSize == 6) {
+        this._ingressQueue = this._ingressQueue.subarray(6);
+        this._push();
+        return;
+      }
+
+      const buf = this._ingressQueue.subarray(6, messageSize);
+      this._ingressQueue = this._ingressQueue.subarray(messageSize, this._ingressQueue.length);
+      const message = this._deserializeMessage(buf);
+      if (this._stream instanceof stream.Readable) {
+        if (!this._stream.push(message)) {
+          this._socket.pause();
+          return;
+        }
+      }
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      Config.errorHandler(error);
+      this._stream.destroy(error);
+      this._socket.destroy();
     }
   };
 
