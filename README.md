@@ -220,7 +220,7 @@ The _Streams_ API provides commonly used logging facilities (i.e., the [Logger](
 - options `<LoggerOptions>`
   - level `<SyslogLevel>` The syslog logger level. **Default: `SyslogLevel.WARN`**
   - name `<string>` An optional name for the `Logger`.
-  - parent `<Logger>` An optional parent `Logger`. Set this to `null` in order to disconnect from the root `Logger`. **Default: `streams-logger.root`**
+  - parent `<Logger>` An optional parent `Logger`.
   - queueSizeLimit `<number>` Optionally specify a limit on the number of log messages that may queue while waiting for a stream to drain. See [Backpressure](#backpressure).
   - captureStackTrace `<boolean>` Optionally specify if stack trace capturing is enabled. This setting will override the default. **Default: `Config.captureStackTrace`**
   - captureISOTime `<boolean>` Optionally specify if capturing ISO time is enabled. This setting will override the default. **Default: `Config.captureISOTime`**
@@ -412,6 +412,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - replacer `<(this: unknown, key: string, value: unknown) => unknown>` An optional replacer for `JSON.stringify`.
   - space `<string | number>` An optional space specification for `JSON.stringify`.
   - payloadSizeLimit `<number>` An optional limit on the size of a serialized log message in bytes. **Default: `1e6`**
+  - ingressQueueThreshold `<number>` An optional threshold for the `ingressQueue` in bytes; the socket will be paused if this threshold is exceeded.
 - streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream. You can use `DuplexOptions` to set a `highWaterMark` on the `SocketHandler`.
 
 Use a `SocketHandler` in order to connect _Streams_ graphs over the network. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-typescript) example for instructions on how to use a `SocketHandler` in order to connect _Streams_ logging graphs over the network.
@@ -656,22 +657,9 @@ TLS Client Certificate Authentication may be implemented using native Node.js [T
 
 ## Hierarchical logging
 
-_Streams_ supports hierarchical logging. By default every `Logger` instance is connected to the root `Logger` (`streams-logger.root`). However, you may optionally specify an antecedent other than `root` by assigning an instance of `Logger` to the `parent` property in the `LoggerOptions`. The antecedent of the root `Logger` is `null`.
+The _Streams_ graph API naturally supports hierarchical logging. You may optionally specify an antecedent `Node` by assigning an instance of `Logger` to the `parent` property in the `LoggerOptions`. The antecedent `Node` will be attached to the `Logger` during its construction.
 
-You may capture logging events from other modules (_and your own_) by connecting a data handler `Node` (e.g., a `ConsoleHandler`) to the `streams-logger.root` `Logger`. E.g.,
-
-```ts
-import { Formatter, ConsoleHandler, SyslogLevel, root } from "streams-logger";
-
-const formatter = new Formatter({
-  format: ({ isotime, message, name, level, func, url, line, col }) => {
-    return `${isotime}:${level}:${func}:${line}:${col}:${message}\n`;
-  },
-});
-const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
-
-root.connect(formatter.connect(consoleHandler));
-```
+Alternatively, _Streams_ also provides a single instance root `Logger` (`streams-logger.root`) that you may optionally integrate into your logging graphs.
 
 ## How-Tos
 
