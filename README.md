@@ -853,6 +853,6 @@ npm test verbose=false
 
 ## Support
 
-For feature requests or issues, please open an [issue](https://github.com/far-analytics/streams-logger/issues) or contact the authors.
+For feature requests or issues, please open an [issue](https://github.com/far-analytics/streams-logger/issues) or contact one of the authors.
 
 - [Adam Patterson](https://github.com/adpatter)
