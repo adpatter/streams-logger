@@ -119,19 +119,19 @@ Output
 
 ### _An instance of logging "Hello, World!"_ <sup><sup>\</TypeScript\></sup></sup>
 
-Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/adpatter/streams-logger/tree/main/examples/hello_world) example for a working implementation.
+Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/far-analytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
 
 ### _Log to a file and the console_ <sup><sup>\</TypeScript\></sup></sup>
 
-Please see the [_Log to a File and the Console_](https://github.com/adpatter/streams-logger/tree/main/examples/log_to_a_file_and_the_console) example that demonstrates how to log to a file and the console using different `Formatters`.
+Please see the [_Log to a File and the Console_](https://github.com/far-analytics/streams-logger/tree/main/examples/log_to_a_file_and_the_console) example that demonstrates how to log to a file and the console using different `Formatters`.
 
 ### _A network connected streams logging graph_ <sup><sup>\</TypeScript\></sup></sup>
 
-Please see the [_Network Connected **Streams** Logging Graph_](https://github.com/adpatter/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network.
+Please see the [_Network Connected **Streams** Logging Graph_](https://github.com/far-analytics/streams-logger/tree/main/examples/network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network.
 
 ### _Use **Streams** in a Node.js project (without type safety)_ <sup><sup>\</Node.js\></sup></sup>
 
-Please see the [_Use **Streams** in a Node.js Project_](https://github.com/adpatter/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project _without_ type checks.
+Please see the [_Use **Streams** in a Node.js Project_](https://github.com/far-analytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project _without_ type checks.
 
 ## Formatting
 
@@ -716,7 +716,7 @@ log.warn("Hello, World!");
 Hello, World!
 ```
 
-_Streams_ provides a few examples of [handlers](https://github.com/adpatter/streams-logger/tree/main/src/handlers), which you can use for modeling your data transformation `Node`.
+_Streams_ provides a few examples of [handlers](https://github.com/far-analytics/streams-logger/tree/main/src/handlers), which you can use for modeling your data transformation `Node`.
 
 ### How to consume a Readable, Writable, Duplex, or Transform Node.js stream
 
@@ -830,7 +830,7 @@ Excerpted from [Semantic Versioning 2.0.0](https://semver.org/):
 #### Clone the repository.
 
 ```bash
-git clone https://github.com/adpatter/streams-logger.git
+git clone https://github.com/far-analytics/streams-logger.git
 ```
 
 #### Change directory into the root of the repository.
@@ -853,6 +853,6 @@ npm test verbose=false
 
 ## Support
 
-For feature requests or issues, please open an [issue](https://github.com/adpatter/streams-logger/issues) or contact the authors.
+For feature requests or issues, please open an [issue](https://github.com/far-analytics/streams-logger/issues) or contact the authors.
 
 - [Adam Patterson](https://github.com/adpatter)
