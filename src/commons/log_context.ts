@@ -1,136 +1,23 @@
-import * as pth from "node:path";
-import { KeysUppercase } from "./types.js";
 import { SyslogLevelT } from "./syslog.js";
+import { KeysUppercase } from "./types.js";
 
-const BASE_POSIX_REGEX =
-  /\s+at\s+(?:(?<func>[A-Za-z_$][A-Za-z0-9_$<>.]*)\s*\()?(?<url>(?:file:\/\/|\/)(?<path>.+?)):(?<line>\d+):(?<col>\d+)\)?/;
-const BASE_WIN32_REGEX =
-  /\s+at\s+(?:(?<func>[A-Za-z_$][A-Za-z0-9_$<>.]*)\s*\()?(?<url>(?:file:\/\/\/[A-Za-z]:|[A-Za-z]:\\)(?<path>.+?)):(?<line>\d+):(?<col>\d+)\)?/;
-
-const REGEX =
-  process.platform === "win32"
-    ? RegExp(/^[^\n]*\n[^\n]*\n/.source + BASE_WIN32_REGEX.source)
-    : RegExp(/^[^\n]*\n[^\n]*\n/.source + BASE_POSIX_REGEX.source);
-
-export interface LogContextOptions<MessageT = string, LevelT = SyslogLevelT> {
+export interface LogContext<MessageT = string, LevelT = SyslogLevelT> {
   message: MessageT;
   name?: string;
   level: KeysUppercase<LevelT>;
-  capture?: Error;
   func?: string;
-  url?: string;
   line?: string;
   col?: string;
   isotime?: string;
-  pathname?: string;
-  path?: string;
-  pathdir?: string;
-  pathroot?: string;
-  pathbase?: string;
-  pathext?: string;
+  location?: string;
   pid?: number;
   hostname?: string;
   threadid?: number;
+  stack?: string;
   metadata?: unknown;
   label?: string;
 }
 
-export class LogContext<MessageT, LevelT> implements LogContextOptions<MessageT, LevelT> {
-  public message: MessageT;
-  public name?: string;
-  public level: KeysUppercase<LevelT>;
-  public func?: string;
-  public url?: string;
-  public line?: string;
-  public col?: string;
-  public isotime?: string;
-  public pathname?: string;
-  public path?: string;
-  public pathdir?: string;
-  public pathroot?: string;
-  public pathbase?: string;
-  public pathext?: string;
-  public pid?: number;
-  public hostname?: string;
-  public threadid?: number;
-  public capture?: Error;
-  public metadata?: unknown;
-  public label?: string;
-
-  constructor(options: LogContextOptions<MessageT, LevelT>) {
-    this.message = options.message;
-    this.name = options.name;
-    this.level = options.level;
-    this.capture = options.capture;
-    this.func = options.func;
-    this.url = options.url;
-    this.line = options.line;
-    this.col = options.col;
-    this.isotime = options.isotime;
-    this.pathname = options.pathname;
-    this.path = options.path;
-    this.pathdir = options.pathdir;
-    this.pathroot = options.pathroot;
-    this.pathbase = options.pathbase;
-    this.pathext = options.pathext;
-    this.pid = options.pid;
-    this.hostname = options.hostname;
-    this.threadid = options.threadid;
-    this.metadata = options.metadata;
-    this.label = options.label;
-  }
-
-  public parseStackTrace = (depth?: number): void => {
-    if (this.capture?.stack) {
-      let regex;
-      if (depth) {
-        regex =
-          process.platform === "win32"
-            ? RegExp(RegExp("[^\\n]*\\n".repeat(depth), "is").source + BASE_WIN32_REGEX.source)
-            : RegExp(RegExp("[^\\n]*\\n".repeat(depth), "is").source + BASE_POSIX_REGEX.source);
-      } else {
-        regex = REGEX;
-      }
-      const match = this.capture.stack.match(regex);
-      const groups = match?.groups;
-      if (groups) {
-        this.func = groups.func;
-        this.url = groups.url;
-        this.line = groups.line;
-        this.col = groups.col;
-        this.path = groups.path;
-        const path = pth.parse(this.path);
-        this.pathdir = path.dir;
-        this.pathroot = path.root;
-        this.pathbase = path.base;
-        this.pathname = path.name;
-        this.pathext = path.ext;
-      }
-    }
-  };
-
-  public toObject(): LogContextOptions<MessageT, LevelT> {
-    return {
-      message: this.message,
-      name: this.name,
-      level: this.level,
-      capture: this.capture,
-      func: this.func,
-      url: this.url,
-      line: this.line,
-      col: this.col,
-      isotime: this.isotime,
-      pathname: this.pathname,
-      path: this.path,
-      pathdir: this.pathdir,
-      pathroot: this.pathroot,
-      pathbase: this.pathbase,
-      pathext: this.pathext,
-      pid: this.pid,
-      hostname: this.hostname,
-      threadid: this.threadid,
-      metadata: this.metadata,
-      label: this.label,
-    };
-  }
+export function isLogContext<MessageT, LevelT>(value: object): value is LogContext<MessageT, LevelT> {
+  return Object.hasOwn(value, "message") && Object.hasOwn(value, "level");
 }
