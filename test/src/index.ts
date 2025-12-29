@@ -12,7 +12,6 @@ import {
   RotatingFileHandler,
   Formatter,
   SyslogLevel,
-  SyslogLevelT,
   Config,
   Node,
 } from "streams-logger";
@@ -27,9 +26,8 @@ import { NodeSocketHandler } from "./node_socket_handler.js";
 
 Config.debug = process.argv.some((value: string) => value.search(/verbose=true/) == 0);
 
-const DATA = "0123456789";
-
 await suite("Test the integrity of the underlying Node data propagation and error handling.", async () => {
+  const DATA = "0123456789";
   const temporalNode = new AnyTemporalToAny<string, string>({ time: 0 });
   const stringToBuffer = new StringToBuffer();
   const bufferToString = new BufferToString();
@@ -74,13 +72,13 @@ await suite("Test the integrity of the underlying Node data propagation and erro
     assert.strictEqual(anyToVoid.writableCount, 0);
   });
 
-  await test("A Node has thrown an Error; check that the graph is still in flowing mode.", async () => {
+  await test("A Node has thrown an Error; check that data still flows through the graph.", async () => {
     const result = once(anyToAnyEmitter.emitter, "data");
     node.write(DATA);
     assert.strictEqual((await result)[0], DATA);
   });
 
-  await test("Attach a Node to the graph, exceed its `highWaterMark`, and check that it remains in flowing mode.", async () => {
+  await test("Attach a Node with a low `highWaterMark` and check that the graph still delivers all data.", async () => {
     let i;
     const ITERATIONS = 1e3;
     const passThrough = new PassThrough({
@@ -129,24 +127,24 @@ await suite("Log a string that passes through a SocketHandler.", async () => {
   const anyToEmitter = new AnyToEmitter();
   const logger = new Logger({ name: "main", level: SyslogLevel.DEBUG });
   const formatter = new Formatter({
-    format: ({ isotime, message, name, level, func, line, col }: LogContext<string, SyslogLevelT>) =>
+    format: ({ isotime, message, name, level, func, line, col }: LogContext) =>
       `${name ?? ""}:${isotime ?? ""}:${level}:${func ?? ""}:${line ?? ""}:${col ?? ""}:${message}\n`,
   });
-  const filter = new Filter({ filter: (logContext: LogContext<string, SyslogLevelT>) => logContext.name == "main" });
+  const filter = new Filter({ filter: (logContext: LogContext) => logContext.name == "main" });
   await once(socket, "connect");
   const socketHandler = new SocketHandler({ socket, payloadSizeLimit: 1e8 });
   const log = logger.connect(formatter.connect(filter.connect(socketHandler.connect(anyToEmitter))));
 
   await test("Log `Hello, World!` and assert that it passed through the graph.", async () => {
     const greeting = "Hello, World!";
-    const result = once(anyToEmitter.emitter, "data") as Promise<LogContext<string, SyslogLevelT>[]>;
+    const result = once(anyToEmitter.emitter, "data") as Promise<LogContext[]>;
     log.warn(greeting);
     assert.match((await result)[0].message, new RegExp(`${greeting}\n$`));
   });
 
   await test('Log a long string, "Hello, World!" repeated 1e6 times, and assert that it passed through the graph.', async () => {
     const greeting = "Hello, World!".repeat(1e6);
-    const result = once(anyToEmitter.emitter, "data") as Promise<LogContext<string, SyslogLevelT>[]>;
+    const result = once(anyToEmitter.emitter, "data") as Promise<LogContext[]>;
     log.warn(greeting);
     const message = (await result)[0].message;
     assert.strictEqual(message.trim().slice(-greeting.length), greeting);
@@ -155,49 +153,13 @@ await suite("Log a string that passes through a SocketHandler.", async () => {
   await test("Log `Hello, World!` repeatedly, 1e4 iterations, and assert that each iteration passed through the graph.", async () => {
     for (let i = 0; i < 1e4; i++) {
       const greeting = "Hello, World!";
-      const result = once(anyToEmitter.emitter, "data") as Promise<LogContext<string, SyslogLevelT>[]>;
+      const result = once(anyToEmitter.emitter, "data") as Promise<LogContext[]>;
       log.warn(greeting);
       const message = (await result)[0].message;
       assert.strictEqual(message.trim().slice(-greeting.length), greeting);
     }
   });
 
-  await suite("Test error handling.", async () => {
-    const logger = new Logger({ name: "main", level: SyslogLevel.DEBUG });
-    const formatter = new Formatter({
-      format: ({ isotime, message, name, level, func, line, col }: LogContext<string, SyslogLevelT>) =>
-        `${name ?? ""}:${isotime ?? ""}:${level}:${func ?? ""}:${line ?? ""}:${col ?? ""}:${message}\n`,
-    });
-    const filter = new Filter({ filter: (logContext: LogContext<string, SyslogLevelT>) => logContext.name == "main" });
-    const anyToAnyEmitter = new AnyToAnyEmitter();
-
-    const log = logger.connect(formatter.connect(filter.connect(anyToAnyEmitter)));
-
-    await test("Test selective detachment of inoperable graph components.", async () => {
-      const greeting = "Hello, World!";
-      const anyToThrow = new AnyTransformToAny<LogContext<string, SyslogLevelT>, LogContext<string, SyslogLevelT>>({
-        transform: () => {
-          throw Error("AnyToThrow Error *** This is a simulated Error ***");
-        },
-      });
-      const anyToVoid = new AnyToVoid();
-      anyToThrow.connect(anyToVoid);
-      formatter.connect(anyToThrow);
-      assert.strictEqual(anyToThrow.writableCount, 1);
-      assert.strictEqual(anyToVoid.writableCount, 1);
-      log.warn(greeting);
-      await new Promise((r) => setTimeout(r));
-      assert.strictEqual(anyToThrow.writableCount, 0);
-      assert.strictEqual(anyToVoid.writableCount, 0);
-    });
-
-    await test("Test that the graph is operable after the error.", async () => {
-      const greeting = "Hello, World!";
-      const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<string, SyslogLevelT>[]>;
-      log.warn(greeting);
-      assert.match((await result)[0].message, new RegExp(`${greeting}\n$`));
-    });
-  });
   after(async () => {
     server.close();
     socket.destroy();
@@ -210,6 +172,43 @@ await suite("Log a string that passes through a SocketHandler.", async () => {
   });
 });
 
+await suite("Test error handling.", async () => {
+  const logger = new Logger({ name: "main", level: SyslogLevel.DEBUG });
+  const formatter = new Formatter({
+    format: ({ isotime, message, name, level, func, line, col }: LogContext) =>
+      `${name ?? ""}:${isotime ?? ""}:${level}:${func ?? ""}:${line ?? ""}:${col ?? ""}:${message}\n`,
+  });
+  const filter = new Filter({ filter: (logContext: LogContext) => logContext.name == "main" });
+  const anyToAnyEmitter = new AnyToAnyEmitter();
+
+  const log = logger.connect(formatter.connect(filter.connect(anyToAnyEmitter)));
+
+  await test("Test selective detachment of inoperable graph components.", async () => {
+    const greeting = "Hello, World!";
+    const anyToThrow = new AnyTransformToAny<LogContext, LogContext>({
+      transform: () => {
+        throw Error("AnyToThrow Error *** This is a simulated Error ***");
+      },
+    });
+    const anyToVoid = new AnyToVoid();
+    anyToThrow.connect(anyToVoid);
+    formatter.connect(anyToThrow);
+    assert.strictEqual(anyToThrow.writableCount, 1);
+    assert.strictEqual(anyToVoid.writableCount, 1);
+    log.warn(greeting);
+    await new Promise((r) => setTimeout(r));
+    assert.strictEqual(anyToThrow.writableCount, 0);
+    assert.strictEqual(anyToVoid.writableCount, 0);
+  });
+
+  await test("Test that the graph is operable after the error.", async () => {
+    const greeting = "Hello, World!";
+    const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext[]>;
+    log.warn(greeting);
+    assert.match((await result)[0].message, new RegExp(`${greeting}\n$`));
+  });
+});
+
 await suite("Log an object that passes through a SocketHandler.", async () => {
   class Greeter {
     public greeting: string;
@@ -217,7 +216,7 @@ await suite("Log an object that passes through a SocketHandler.", async () => {
     public name?: string;
     public level?: string;
     public func?: string;
-    public url?: string;
+    public location?: string;
     public line?: string;
     public col?: string;
     constructor(greeating = "Hello, World!", repeat = 1) {
@@ -239,12 +238,12 @@ await suite("Log an object that passes through a SocketHandler.", async () => {
   const anyToAnyEmitter = new AnyToAnyEmitter();
   const logger = new Logger<Greeter>({ name: "main", level: SyslogLevel.DEBUG });
   const formatter = new Formatter<Greeter, Greeter>({
-    format: ({ message, isotime, name, level, func, url, line, col }: LogContext<Greeter, SyslogLevelT>) => {
+    format: ({ message, isotime, name, level, func, location, line, col }: LogContext<Greeter>) => {
       message.isotime = isotime;
       message.name = name;
       message.level = level;
       message.func = func;
-      message.url = url;
+      message.location = location;
       message.line = line;
       message.col = col;
       return message;
@@ -253,70 +252,128 @@ await suite("Log an object that passes through a SocketHandler.", async () => {
   const socketHandler = new SocketHandler<Greeter>({ socket, payloadSizeLimit: 1e8 });
   const log = logger.connect(formatter.connect(socketHandler.connect(anyToAnyEmitter)));
 
-  await test("Log a `Greeter` object and assert that it passed through the graph.", async () => {
-    const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }, SyslogLevelT>[]>;
+  await test("Log a greeting  and assert that it passed through the graph.", async () => {
+    const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }>[]>;
     (function sayHello() {
       log.warn(greeter);
     })();
     assert.strictEqual((await result)[0].message.greeting, greeter.greeting);
   });
 
-  await suite("Test stack trace parsing.", async () => {
-    await test("Log a `Greeter` object and assert that the anonymous arrow function name was captured.", async () => {
-      const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }, SyslogLevelT>[]>;
-      (() => {
-        log.warn(greeter);
-      })();
-      assert.strictEqual((await result)[0].func, undefined);
+  after(async () => {
+    server.close();
+    socket.destroy();
+    await once(server, "close");
+    fs.readdirSync(".", { withFileTypes: true }).forEach((value: fs.Dirent) => {
+      if (/[^.]+.log(\.\d*)?/.exec(value.name)) {
+        fs.rmSync(value.name);
+      }
     });
+  });
+});
 
-    await test("Log a `Greeter` object and assert that anonymous function name was captured.", async () => {
-      const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }, SyslogLevelT>[]>;
-      (function () {
-        log.warn(greeter);
-      })();
-      assert.strictEqual((await result)[0].func, undefined);
-    });
+await suite("Test stack trace parsing.", async () => {
+  const GREETING = "Hello, World!";
+  const serverRotatingFileHandler = new RotatingFileHandler<string>({ path: "server.log" });
+  const serverFormatter = new Formatter<string, string>({ format: ({ message }) => `${JSON.stringify(message)}\n` });
+  const formatterNode = serverFormatter.connect(serverRotatingFileHandler);
+  const server = net
+    .createServer((socket: net.Socket) => {
+      const socketHandler = new SocketHandler<string>({ socket, payloadSizeLimit: 1e8 });
+      socketHandler.connect(formatterNode, socketHandler);
+    })
+    .listen(3000);
+  const socket = net.createConnection({ port: 3000 });
+  await once(socket, "connect");
+  const anyToAnyEmitter = new AnyToAnyEmitter();
+  const logger = new Logger<string>({ name: "main", level: SyslogLevel.DEBUG });
+  const formatter = new Formatter<string, string>({
+    format: ({ message }: LogContext) => {
+      return message;
+    },
+  });
+  const socketHandler = new SocketHandler<string>({ socket, payloadSizeLimit: 1e8 });
+  const log = logger.connect(formatter.connect(socketHandler.connect(anyToAnyEmitter)));
 
-    await test("Log a `Greeter` object and assert that the function name was captured.", async () => {
-      const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }, SyslogLevelT>[]>;
-      (function sayHello() {
-        log.warn(greeter);
-      })();
-      assert.strictEqual((await result)[0].func, "sayHello");
-    });
+  await test("Log a greeting and assert that the function name was undefined.", async () => {
+    const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }>[]>;
+    (() => {
+      log.warn(GREETING);
+    })();
+    assert.strictEqual((await result)[0].func, undefined);
+  });
 
-    await test("Log a `Greeter` object and assert that the arrow function name was captured.", async () => {
-      const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }, SyslogLevelT>[]>;
-      const sayHello = () => {
-        log.warn(greeter);
+  await test("Log a greeting and assert that anonymous function name was undefined.", async () => {
+    const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }>[]>;
+    (function () {
+      log.warn(GREETING);
+    })();
+    assert.strictEqual((await result)[0].func, undefined);
+  });
+
+  await test("Log a greeting and assert that the function name was captured.", async () => {
+    const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }>[]>;
+    (function sayHello() {
+      log.warn(GREETING);
+    })();
+    assert.strictEqual((await result)[0].func, "sayHello");
+  });
+
+  await test("Log a greeting and assert that the arrow function name was captured.", async () => {
+    const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }>[]>;
+    const sayHello = () => {
+      log.warn(GREETING);
+    };
+    sayHello();
+    assert.strictEqual((await result)[0].func, "sayHello");
+  });
+
+  await test("Log a greeting and assert that the async function name was captured.", async () => {
+    const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }>[]>;
+    (async function sayHello() {
+      await new Promise((r) => {
+        setTimeout(r, 100);
+      });
+      log.warn(GREETING);
+    })().catch(() => null);
+    assert.strictEqual((await result)[0].func, "sayHello");
+  });
+
+  await test("Log a greeting and assert that the async arrow function name was captured.", async () => {
+    const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }>[]>;
+    const sayHello = async () => {
+      await new Promise((r) => {
+        setTimeout(r, 100);
+      });
+      log.warn(GREETING);
+    };
+    sayHello().catch(() => null);
+    assert.strictEqual((await result)[0].func, "sayHello");
+  });
+
+  await test("Set a timeout and log a greeting and assert that the timeout function name was captured.", async () => {
+    const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }>[]>;
+    const sayHello = () => {
+      log.warn(GREETING);
+    };
+    setTimeout(sayHello, 1e2);
+    assert.strictEqual((await result)[0].func, "Timeout.sayHello");
+  });
+
+  await test("Log a greeting and assert that the bound function name was captured.", async () => {
+    class Greeter {
+      public greeting: string;
+      constructor(greeating = "Hello, World!") {
+        this.greeting = greeating;
+      }
+      public speak = () => {
+        log.warn(this.greeting);
       };
-      sayHello();
-      assert.strictEqual((await result)[0].func, "sayHello");
-    });
-
-    await test("Log a `Greeter` object and assert that the async function name was captured.", async () => {
-      const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }, SyslogLevelT>[]>;
-      (async function sayHello() {
-        await new Promise((r) => {
-          setTimeout(r, 100);
-        });
-        log.warn(greeter);
-      })().catch(() => null);
-      assert.strictEqual((await result)[0].func, "sayHello");
-    });
-
-    await test("Log a `Greeter` object and assert that the async arrow function name was captured.", async () => {
-      const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }, SyslogLevelT>[]>;
-      const sayHello = async () => {
-        await new Promise((r) => {
-          setTimeout(r, 100);
-        });
-        log.warn(greeter);
-      };
-      sayHello().catch(() => null);
-      assert.strictEqual((await result)[0].func, "sayHello");
-    });
+    }
+    const greeter = new Greeter();
+    const result = once(anyToAnyEmitter.emitter, "data") as Promise<LogContext<{ greeting: string }>[]>;
+    greeter.speak();
+    assert.strictEqual((await result)[0].func, "Greeter.speak");
   });
 
   after(async () => {
@@ -335,33 +392,48 @@ await suite("Log a string that passes through a rotating file handler.", async (
   const MAX_SIZE = (1e5 * 50) / 5;
   const logger = new Logger<string>({ name: "main" });
   const formatter = new Formatter<string, string>({
-    format: ({ isotime, message, name, level, func }: LogContext<string, SyslogLevelT>) =>
+    format: ({ isotime, message, name, level, func }: LogContext) =>
       `${name ?? ""}:${isotime ?? ""}:${level}:${func ?? ""}:${message}\n`,
   });
+  const rotationLimit = 5;
   const rotatingFileHandler = new RotatingFileHandler<string>({
     path: "message.log",
-    rotationLimit: 5,
+    rotationLimit,
     maxSize: MAX_SIZE,
   });
   const anyToAnyEmitter = new AnyToAnyEmitter();
 
   const log = logger.connect(formatter.connect(anyToAnyEmitter, rotatingFileHandler));
 
-  await test("Log 1e5 messages to a `RotatingFileHandler` and assert that it rotated 5 times and that each file is MAX_SIZE.", async () => {
+  await test("Log 1e5 messages to a `RotatingFileHandler` and assert rotation occurred and sizes respect MAX_SIZE.", async () => {
+    const promise = new Promise((r)=>{
+      let counter = 0;
+      anyToAnyEmitter.emitter.on("data", ()=>{
+        counter = counter + 1;
+        if (counter == 1e5) {
+          r(null);
+        }
+      });
+    });
     const iterations = 1e5;
     for (let i = 0; i < iterations; i++) {
       (function sayHello() {
         log.warn("01234"); // The message is 50 bytes once the timestamp and other contextual data is added to message.
       })();
     }
-    await new Promise((r) => setTimeout(r, 20000));
+    await promise;
     const results = fs
       .readdirSync(".", { withFileTypes: true })
       .filter((value) => /[^.]+.log(\.\d*)?/.exec(value.name))
-      .map((value: fs.Dirent) => fs.statSync(value.name));
-    assert.strictEqual(results.length, 5);
+      .map((value: fs.Dirent) => ({
+        name: value.name,
+        size: fs.statSync(value.name).size,
+      }));
+    const rotated = results.filter((result) => /\.\d+$/.exec(result.name));
+    assert.ok(rotated.length > 0, "Expected at least one rotated file.");
+    assert.ok(results.length <= rotationLimit + 1, "Expected no more than rotationLimit + 1 files.");
     for (const result of results) {
-      assert.strictEqual(result.size, MAX_SIZE);
+      assert.ok(result.size <= MAX_SIZE, `Expected ${result.name} to be <= MAX_SIZE.`);
     }
   });
   after(() => {
