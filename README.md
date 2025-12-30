@@ -211,7 +211,7 @@ The _Streams_ API provides commonly used logging facilities (i.e., the [Logger](
 #### new streams-logger.Logger\<MessageT\>(options, streamOptions)
 
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
-- options `<LoggerOptions>`
+- options `<LoggerOptions>` Optional options to be passed to the `Logger`.
   - level `<SyslogLevel>` The syslog logger level. **Default: `SyslogLevel.WARN`**
   - name `<string>` An optional name for the `Logger`.
   - parent `<Logger>` An optional parent `Logger`.
@@ -354,7 +354,7 @@ Returns: `<Filter<LogContext<MessageT, SyslogLevelT>, LogContext<MessageT, Syslo
 #### new streams-logger.ConsoleHandler\<MessageT\>(options, streamOptions)
 
 - `<MessageT>` The type of the logged message. **Default: `<string>`**
-- options `<ConsoleHandlerOptions>`
+- options `<ConsoleHandlerOptions>` Optional options to be passed to the `ConsoleHandler`.
   - level `<SyslogLevel>` An optional log level. **Default: `SyslogLevel.WARN`**
 - streamOptions `<stream.WritableOptions>` Optional options to be passed to the stream. You can use `WritableOptions` to set a `highWaterMark` on the `ConsoleHandler`.
 
@@ -381,7 +381,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - mode `<number>` An optional mode. **Default: `0o666`**
   - level `<SyslogLevel>` An optional log level. **Default: `SyslogLevel.WARN`**
   - flags `<string>` An optional file system flag. **Default: `a`**
-- streamOptions `<stream.WritableOptions>` Optional options to be passed to the stream. You can use `WritableOptions` to set a `highWaterMark` on the `RotatingFileHandler`.
+- streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream. You can use `TransformOptions` to set a `highWaterMark` on the `RotatingFileHandler`.
 
 Use a `RotatingFileHandler` in order to write your log messages to a file.
 
@@ -405,6 +405,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - reviver `<(this: unknown, key: string, value: unknown) => unknown>` An optional reviver for `JSON.parse`.
   - replacer `<(this: unknown, key: string, value: unknown) => unknown>` An optional replacer for `JSON.stringify`.
   - space `<string | number>` An optional space specification for `JSON.stringify`.
+  - level `<SyslogLevel>` An optional log level. **Default: `SyslogLevel.WARN`**
   - payloadSizeLimit `<number>` An optional limit on the size of a serialized log message in bytes. **Default: `1e6`**
   - ingressQueueThreshold `<number>` An optional threshold for the `ingressQueue` in bytes; the socket will be paused if this threshold is exceeded.
 - streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream. You can use `DuplexOptions` to set a `highWaterMark` on the `SocketHandler`.
