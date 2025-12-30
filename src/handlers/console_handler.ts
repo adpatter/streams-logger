@@ -10,14 +10,14 @@ export const $level = Symbol("option");
 export class ConsoleHandlerWritable<MessageT> extends stream.Writable {
   public [$level]: SyslogLevel;
 
-  constructor(options: ConsoleHandlerOptions, streamOptions?: stream.WritableOptions) {
+  constructor(options?: ConsoleHandlerOptions, writableOptions?: stream.WritableOptions) {
     super({
       ...Config.getWritableOptions(true),
-      ...streamOptions,
+      ...writableOptions,
       ...{ objectMode: true },
     });
 
-    this[$level] = options.level ?? SyslogLevel.WARN;
+    this[$level] = options?.level ?? SyslogLevel.WARN;
   }
 
   public _write(
@@ -77,7 +77,7 @@ export class ConsoleHandler<MessageT = string> extends Node<
   never,
   ConsoleHandlerWritable<MessageT>
 > {
-  constructor(options: ConsoleHandlerOptions, streamOptions?: stream.WritableOptions) {
+  constructor(options?: ConsoleHandlerOptions, streamOptions?: stream.WritableOptions) {
     super(new ConsoleHandlerWritable<MessageT>(options, streamOptions));
   }
 

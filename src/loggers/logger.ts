@@ -20,20 +20,14 @@ export interface BaseLoggerOptions<MessageT> {
   captureISOTime?: boolean;
 }
 
-export abstract class BaseLogger<MessageT = string> extends Node<
-  LogContext<MessageT>,
-  LogContext<MessageT>
-> {
+export abstract class BaseLogger<MessageT = string> extends Node<LogContext<MessageT>, LogContext<MessageT>> {
   public level: SyslogLevel;
   protected _name?: string;
   protected _captureStackTrace: boolean;
   protected _captureISOTime: boolean;
   protected _queueSizeLimit?: number;
 
-  constructor(
-    { name, level, queueSizeLimit, parent, captureStackTrace, captureISOTime }: BaseLoggerOptions<MessageT>,
-    streamOptions?: stream.TransformOptions
-  ) {
+  constructor(options?: BaseLoggerOptions<MessageT>, streamOptions?: stream.TransformOptions) {
     super(
       new stream.PassThrough({
         ...Config.getDuplexOptions(true, true),
@@ -45,13 +39,13 @@ export abstract class BaseLogger<MessageT = string> extends Node<
       })
     );
 
-    this.level = level ?? SyslogLevel.WARN;
-    this._name = name;
-    this._queueSizeLimit = queueSizeLimit;
-    this._captureISOTime = captureISOTime ?? Config.captureISOTime;
-    this._captureStackTrace = captureStackTrace ?? Config.captureStackTrace;
-    if (parent) {
-      this.connect(parent);
+    this.level = options?.level ?? SyslogLevel.WARN;
+    this._name = options?.name;
+    this._queueSizeLimit = options?.queueSizeLimit;
+    this._captureISOTime = options?.captureISOTime ?? Config.captureISOTime;
+    this._captureStackTrace = options?.captureStackTrace ?? Config.captureStackTrace;
+    if (options?.parent) {
+      this.connect(options.parent);
     }
   }
 

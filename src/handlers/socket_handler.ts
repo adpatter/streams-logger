@@ -26,21 +26,11 @@ export class SocketHandler<MessageT = string> extends Node<LogContext<MessageT>,
   protected _payloadSizeLimit: number;
   protected _ingressQueueThreshold?: number;
 
-  constructor(
-    {
-      socket,
-      reviver,
-      replacer,
-      space,
-      level = SyslogLevel.WARN,
-      payloadSizeLimit = 1e6,
-      ingressQueueThreshold,
-    }: SocketHandlerOptions,
-    streamOptions?: stream.DuplexOptions
-  ) {
+  constructor(options: SocketHandlerOptions, duplexOptions?: stream.DuplexOptions) {
     super(
       new stream.Duplex({
-        ...streamOptions,
+        ...Config.getDuplexOptions(true, true),
+        ...duplexOptions,
         ...{
           writableObjectMode: true,
           readableObjectMode: true,
@@ -86,14 +76,15 @@ export class SocketHandler<MessageT = string> extends Node<LogContext<MessageT>,
         },
       })
     );
-    this.level = level;
-    this._reviver = reviver;
-    this._replacer = replacer;
-    this._space = space;
+
+    this.level = options.level ?? SyslogLevel.WARN;
+    this._reviver = options.reviver;
+    this._replacer = options.replacer;
+    this._space = options.space;
     this._ingressQueue = Buffer.allocUnsafe(0);
-    this._payloadSizeLimit = payloadSizeLimit;
-    this._ingressQueueThreshold = ingressQueueThreshold;
-    this._socket = socket;
+    this._payloadSizeLimit = options.payloadSizeLimit ?? 1e6;
+    this._ingressQueueThreshold = options.ingressQueueThreshold;
+    this._socket = options.socket;
     if (this._socket.listeners("error").length == 0) {
       this._socket.on("error", Config.errorHandler);
     }

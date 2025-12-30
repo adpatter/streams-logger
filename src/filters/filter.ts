@@ -7,11 +7,8 @@ export interface FilterOptions<MessageT> {
   filter: (logContext: LogContext<MessageT>) => Promise<boolean> | boolean;
 }
 
-export class Filter<MessageT = string> extends Node<
-  LogContext<MessageT>,
-  LogContext<MessageT>
-> {
-  constructor({ filter }: FilterOptions<MessageT>, streamOptions?: stream.TransformOptions) {
+export class Filter<MessageT = string> extends Node<LogContext<MessageT>, LogContext<MessageT>> {
+  constructor(options: FilterOptions<MessageT>, streamOptions?: stream.TransformOptions) {
     super(
       new stream.Transform({
         ...Config.getDuplexOptions(true, true),
@@ -25,7 +22,7 @@ export class Filter<MessageT = string> extends Node<
             callback: stream.TransformCallback
           ): void => {
             (async () => {
-              if (await filter(logContext)) {
+              if (await options.filter(logContext)) {
                 callback(null, logContext);
               } else {
                 callback();

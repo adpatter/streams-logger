@@ -11,7 +11,7 @@ export class Formatter<MessageInT = string, MessageOutT = string> extends Node<
   LogContext<MessageInT>,
   LogContext<MessageOutT>
 > {
-  constructor({ format }: FormatterOptions<MessageInT, MessageOutT>, streamOptions?: stream.TransformOptions) {
+  constructor(options: FormatterOptions<MessageInT, MessageOutT>, streamOptions?: stream.TransformOptions) {
     super(
       new stream.Transform({
         ...Config.getDuplexOptions(true, true),
@@ -25,7 +25,7 @@ export class Formatter<MessageInT = string, MessageOutT = string> extends Node<
             callback: stream.TransformCallback
           ) => {
             (async () => {
-              const message = await format(logContext);
+              const message = await options.format(logContext);
               const logContextOut = { ...logContext, ...{ message: message } };
               callback(null, logContextOut);
             })().catch((err: unknown) => {

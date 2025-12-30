@@ -29,31 +29,21 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
   protected [$mode]: number;
   protected [$encoding]: NodeJS.BufferEncoding;
 
-  constructor(
-    {
-      level = SyslogLevel.WARN,
-      path,
-      rotationLimit = 0,
-      maxSize = 1e6,
-      flags = "a",
-      encoding = "utf-8",
-      mode = 0o666,
-    }: RotatingFileHandlerOptions,
-    writableOptions?: stream.WritableOptions
-  ) {
+  constructor(options: RotatingFileHandlerOptions, transformOptions?: stream.TransformOptions) {
     super({
-      ...Config.getWritableOptions(true),
-      ...writableOptions,
+      ...Config.getDuplexOptions(true, true),
+      ...transformOptions,
       ...{
-        objectMode: true,
+        writableObjectMode: true,
+        readableObjectMode: true,
       },
     });
-    this[$level] = level;
-    this[$rotationLimit] = rotationLimit;
-    this[$maxSize] = maxSize;
-    this[$encoding] = encoding;
-    this[$mode] = mode;
-    this[$path] = pth.resolve(pth.normalize(path));
+    this[$level] = options.level ?? SyslogLevel.WARN;
+    this[$rotationLimit] = options.rotationLimit ?? 0;
+    this[$maxSize] = options.maxSize ?? 1e6;
+    this[$encoding] = options.encoding ?? "utf-8";
+    this[$mode] = options.mode ?? 0o666;
+    this[$path] = pth.resolve(pth.normalize(options.path));
     this[$size] = 0;
 
     if (fs.existsSync(this[$path])) {
@@ -66,7 +56,7 @@ export class RotatingFileHandlerTransform<MessageT> extends stream.Transform {
       encoding: this[$encoding],
       flush: true,
       autoClose: true,
-      flags,
+      flags: options.flags ?? "a",
     });
     this[$writeStream].on("error", Config.errorHandler);
     this.pipe(this[$writeStream]);
@@ -177,8 +167,8 @@ export class RotatingFileHandler<MessageT = string> extends Node<
   never,
   RotatingFileHandlerTransform<MessageT>
 > {
-  constructor(options: RotatingFileHandlerOptions, streamOptions?: stream.WritableOptions) {
-    super(new RotatingFileHandlerTransform<MessageT>(options, streamOptions));
+  constructor(options: RotatingFileHandlerOptions, transformOptions?: stream.TransformOptions) {
+    super(new RotatingFileHandlerTransform<MessageT>(options, transformOptions));
   }
 
   public setLevel = (level: SyslogLevel): void => {
