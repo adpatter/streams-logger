@@ -2,7 +2,7 @@
 
 ## Introduction
 
-In this example you will use _Streams_ in order to log "Hello, World!" to a file and the console using different instances of a `Formatter`. Streams provides a rich selection of [contextual information](https://github.com/adpatter/streams-logger/tree/main?tab=readme-ov-file#log-context-properties) to choose from. For this example you will log:
+In this example you will use _Streams_ in order to log "Hello, World!" to a file and the console using different instances of a `Formatter`. Streams provides a rich selection of [contextual information](https://github.com/far-analytics/streams-logger/tree/main?tab=readme-ov-file#log-context-properties) to choose from. For this example you will log:
 
 - The name of the logger
 - The ISO time
@@ -51,7 +51,7 @@ sayHello();
 #### Clone the _Streams_ repository.
 
 ```bash
-git clone https://github.com/adpatter/streams-logger.git
+git clone https://github.com/far-analytics/streams-logger.git
 ```
 
 #### Change directory into the relevant example directory.

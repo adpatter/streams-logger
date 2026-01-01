@@ -41,7 +41,7 @@ setInterval(sayHello, 1000);
 #### Clone the Streams repository.
 
 ```bash
-git clone https://github.com/adpatter/streams-logger.git
+git clone https://github.com/far-analytics/streams-logger.git
 ```
 
 #### Change directory into the relevant example directory.
