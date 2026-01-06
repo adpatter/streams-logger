@@ -1,4 +1,4 @@
-# _An Instance of "Hello, World!"_
+# _An Instance of Object "Hello, World!"_
 
 ## Introduction
 
