@@ -17,7 +17,6 @@ _Streams_ is an intuitive logger built on native Node.js streams. You can use th
 - A type-safe graph-like API pattern for constructing sophisticated [logging graphs](#graph-api-pattern).
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
 - Error handling and selective detachment of inoperable graph components.
-- Log any type of message you choose - including [objects serialized to JSON](#object-json-logging).
 - Use _Streams_ in your Node.js project, [without type safety](#use-streams-in-a-nodejs-project-without-type-safety-nodejs), or take advantage of the TypeScript type definitions.
 
 ## Table of contents
@@ -28,7 +27,6 @@ _Streams_ is an intuitive logger built on native Node.js streams. You can use th
 - [Examples](#examples)
 - [Formatting](#formatting)
 - [API](#api)
-- [Object (JSON) logging](#object-json-logging)
 - [Using a Socket Handler](#using-a-socket-handler)
 - [Hierarchical logging](#hierarchical-logging)
 - [How-Tos](#how-tos)
@@ -584,40 +582,6 @@ Use `Config.getWritableOptions` when implementing a [custom _Streams_ data trans
   - DEBUG = 7
 
 Use `SyslogLevel` to set the level in the options passed to `Logger`, `Filter`, and Handler constructors.
-
-## Object (JSON) logging
-
-_Streams_ logging facilities (e.g., Logger, Formatter, etc.) default to logging `string` messages; however, you can log any type of message you want by specifying your message type in the type parameter of the constructor. In the following example, a permissive interface is created named `Message`. The `Message` type is specified in the type parameter of the constructor of each `Node` (i.e., the Logger, Formatter, and ConsoleHandler). The `Formatter` is configured to input a `Message` and output a `string`; `Message` objects are serialized using `JSON.stringify`.
-
-```ts
-import { Logger, Formatter, ConsoleHandler, SyslogLevel } from "streams-logger";
-
-interface Message {
-  [key: string]: string | number;
-}
-
-const logger = new Logger<Message>({ level: SyslogLevel.DEBUG });
-const formatter = new Formatter<Message, string>({
-  format: ({ isotime, message, level, func, line, col }) => {
-    return `${isotime}:${level}:${func}:${line}:${col}:${JSON.stringify(message)}\n`;
-  },
-});
-const consoleHandler = new ConsoleHandler<string>({ level: SyslogLevel.DEBUG });
-
-const log = logger.connect(formatter.connect(consoleHandler));
-
-(function sayHello() {
-  log.warn({ greeting: "Hello, World!", prime_number: 57 });
-})();
-```
-
-Output
-
-```bash
-# ⮶date-time    function name⮷ column⮷    ⮶message
-2024-07-06T03:19:28.767Z:WARN:sayHello:9:9:{"greeting":"Hello, World!","prime_number":57}
-#                        ⮴level          ⮴line number
-```
 
 ## Using a Socket Handler
 
