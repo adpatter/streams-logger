@@ -104,9 +104,4 @@ npm start
 ```
 
 ##### Output
- <pre
-      class="western"
-    ><font color="#000000"><span style="background: #000000"><font color="#2472c8">hello-logger</font>:<font color="#666666">2026-01-06T22:34:33.214Z</font>:<font color="#0dbc79">INFO</font>:<font color="#bc3fbc">sayHello</font>:<font color="#11a8cd">13</font>:<font color="#11a8cd">9</font>:<font color="#e5e5e5">Hello, World!</font>                                                                                                                               </span></font>
-<font color="#000000"><span style="background: #000000"><font color="#2472c8">hello-logger</font>:<font color="#666666">2026-01-06T22:34:33.216Z</font>:<font color="#0dbc79">INFO</font>:<font color="#bc3fbc">Greeter.speak</font>:<font color="#11a8cd">21</font>:<font color="#11a8cd">13</font>:<font color="#e5e5e5">Hello, World!</font>                                                                                                                         </span></font>
-<font color="#000000"><span style="background: #000000"><font color="#2472c8">hello-logger</font>:<font color="#666666">2026-01-06T22:34:33.217Z</font>:<font color="#cd3131">ERROR</font>:<font color="#bc3fbc">Greeter.shout</font>:<font color="#11a8cd">24</font>:<font color="#11a8cd">13</font>:<font color="#e5e5e5">Hello, World!</font>                                                                                                                        </span></font>
-<font color="#000000"><span style="background: #000000"><font color="#2472c8">hello-logger</font>:<font color="#666666">2026-01-06T22:34:34.215Z</font>:<font color="#0dbc79">INFO</font>:<font color="#bc3fbc">Timeout.sayHello</font>:<font color="#11a8cd">13</font>:<font color="#11a8cd">9</font>:<font color="#e5e5e5">Hello, World!</font>  </span></font></pre>
+![Output](https://raw.githubusercontent.com/far-analytics/streams-logger/refs/heads/main/examples/hello_world_colorize/output.png)
