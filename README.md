@@ -121,6 +121,18 @@ Output
 
 Please see the [Usage](#usage) section above or the ["Hello, World!"](https://github.com/far-analytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
 
+### _An instance of colorized "Hello, World!"_ <sup><sup>\</TypeScript\></sup></sup>
+
+Please see the ["An Instance of Colorized "Hello, World!"](https://github.com/far-analytics/streams-logger/tree/main/examples/hello_world_colorized) example that demonstrates how to log to the console using the external library [Chalk](https://www.npmjs.com/package/chalk).
+
+### _An instance of JSON "Hello, World!"_ <sup><sup>\</TypeScript\></sup></sup>
+
+Please see the ["An Instance of JSON "Hello, World!"](https://github.com/far-analytics/streams-logger/tree/main/examples/hello_world_json) example that demonstrates how to log to the console as JSON.
+
+### _An instance of Object "Hello, World!"_ <sup><sup>\</TypeScript\></sup></sup>
+
+Please see the ["An Instance of Object "Hello, World!"](https://github.com/far-analytics/streams-logger/tree/main/examples/hello_world_object) example that demonstrates how to log to the console as an object.
+
 ### _Log to a file and the console_ <sup><sup>\</TypeScript\></sup></sup>
 
 Please see the [_Log to a File and the Console_](https://github.com/far-analytics/streams-logger/tree/main/examples/log_to_a_file_and_the_console) example that demonstrates how to log to a file and the console using different `Formatters`.
