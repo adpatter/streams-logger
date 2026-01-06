@@ -8,25 +8,32 @@ In this example you will use Streams in order to log "Hello, World!" to the cons
 
 ### Implement the `index.ts` module
 
-#### Import the Logger, Formatter, ConsoleHandler, SyslogLevel enum and the external chalk library.
+#### Import the Logger, Formatter, ConsoleHandler, SyslogLevel enum and the external Chalk library.
 
 ```ts
 import { Logger, Formatter, ConsoleHandler, SyslogLevel } from "streams-logger";
-import chalk from "chalk";
+import chalk from "chalk"; // https://www.npmjs.com/package/chalk
 ```
 
 #### Create an instance of a Logger, Formatter, and ConsoleHandler.
 
 ```ts
 const logger = new Logger({ name: "hello-logger", level: SyslogLevel.DEBUG });
+
 const formatter = new Formatter({
   format: ({ isotime, message, name, level, func, line, col }) => {
-    const data = `${halk.blue(name)}:${chalk.grey(isotime)}:${
-      level != "ERROR" ? chalk.green(level) : chalk.red(level)
-    }:${chalk.magenta(func)}:${chalk.cyan(line)}:${chalk.cyan(col)}:${chalk.white(message)}\n`;
+    const _level = level != "ERROR" ? chalk.green(level) : chalk.red(level);
+    name = chalk.blue(name);
+    isotime = chalk.grey(isotime);
+    func = chalk.magenta(func);
+    line = chalk.cyan(line);
+    col = chalk.cyan(col);
+    message = chalk.white(message);
+    const data = `${name}:${isotime}:${_level}:${func}:${line}:${col}:${message}\n`;
     return data;
   },
 });
+
 const consoleHandler = new ConsoleHandler({ level: SyslogLevel.DEBUG });
 ```
 
@@ -66,7 +73,7 @@ const greeter = new Greeter();
 
 greeter.speak();
 
-greeter.shout();
+greeter.shout(); // Greeter.shout invokes an ERROR message.
 ```
 
 ## Run the example
@@ -104,4 +111,5 @@ npm start
 ```
 
 ##### Output
+
 ![Output](https://raw.githubusercontent.com/far-analytics/streams-logger/refs/heads/main/examples/hello_world_colorize/output.png)

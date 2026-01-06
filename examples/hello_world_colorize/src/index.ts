@@ -4,7 +4,14 @@ import chalk from "chalk";
 const logger = new Logger({ name: "hello-logger", level: SyslogLevel.DEBUG });
 const formatter = new Formatter({
   format: ({ isotime, message, name, level, func, line, col }) => {
-    const data = `${chalk.blue(name)}:${chalk.grey(isotime)}:${level != "ERROR" ? chalk.green(level) : chalk.red(level)}:${chalk.magenta(func)}:${chalk.cyan(line)}:${chalk.cyan(col)}:${chalk.white(message)}\n`;
+    const _level = level != "ERROR" ? chalk.green(level) : chalk.red(level);
+    name = chalk.blue(name);
+    isotime = chalk.grey(isotime);
+    func = chalk.magenta(func);
+    line = chalk.cyan(line);
+    col = chalk.cyan(col);
+    message = chalk.white(message);
+    const data = `${name}:${isotime}:${_level}:${func}:${line}:${col}:${message}\n`;
     return data;
   },
 });
