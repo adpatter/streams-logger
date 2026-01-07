@@ -433,7 +433,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - ingressQueueThreshold `<number>` An optional threshold for the `ingressQueue` in bytes; the socket will be paused if this threshold is exceeded.
 - streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream. You can use `DuplexOptions` to set a `highWaterMark` on the `SocketHandler`.
 
-Use a `SocketHandler` in order to connect _Streams_ graphs over the network. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph) example for instructions on how to use a `SocketHandler` in order to connect _Streams_ logging graphs over the network.
+Use a `SocketHandler` in order to connect _Streams_ graphs over the network. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-typescript) example for instructions on how to use a `SocketHandler` in order to connect _Streams_ logging graphs over the network.
 
 _public_ **socketHandler.connect(...nodes)**
 
@@ -593,7 +593,7 @@ Use `SyslogLevel` to set the level in the options passed to `Logger`, `Filter`, 
 
 ## Using a Socket Handler
 
-_Streams_ uses Node.js streams for message propagation. Node.js represents sockets as streams; hence, sockets are a natural extension of a _Streams_ logging graph. For example, you may choose to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph) example for a working implementation.
+_Streams_ uses Node.js streams for message propagation. Node.js represents sockets as streams; hence, sockets are a natural extension of a _Streams_ logging graph. For example, you may choose to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-typescript) example for a working implementation.
 
 ### Payload size limit
 
