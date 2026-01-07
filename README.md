@@ -13,11 +13,11 @@ _Streams_ is an intuitive logger built on native Node.js streams. You can use th
 - **A _zero-dependency_ logging framework based on native Node.js streams.**
 - A library of commonly used logging components: [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class).
 - A rich selection of [contextual data](#log-context-properties) (e.g., module name, function name, line number, etc.) for augmenting log messages.
-- Log your message in any format you choose including [JSON](#log-a-json-object-typescript) and [colorized](#log-a-colorized-hello-world-message-typescript) output formats.
+- Log your message in any format you choose including [JSON](#log-a-json-object) and [colorized](#log-a-colorized-hello-world-message) output formats.
 - A type-safe graph-like API pattern for constructing sophisticated [logging graphs](#graph-api-pattern).
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
 - Error handling and selective detachment of inoperable graph components.
-- Use _Streams_ in your Node.js project, [without type safety](#use-streams-in-a-nodejs-project-without-type-safety-nodejs), or take advantage of the TypeScript type definitions.
+- Use _Streams_ in your Node.js project, [without type safety](#use-streams-in-a-nodejs-project-without-type-safety), or take advantage of the TypeScript type definitions.
 
 ## Table of contents
 
@@ -120,41 +120,41 @@ Output
 
 ## Examples
 
-### _"Hello, World!"_ <sup><sup>\</TypeScript\></sup></sup>
+### _"Hello, World!"_
 
-Please see the [Usage](#usage) section above or the [_Hello, World!_](https://github.com/far-analytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
+Please see the [Usage](#usage) section above or the [_Hello, World!_](https://github.com/far-analytics/streams-logger/tree/main/examples/hello_world) example for a working implementation. <sup><sup>\</TypeScript\></sup></sup>
 
-### _Log a colorized "Hello, World!" message_ <sup><sup>\</TypeScript\></sup></sup>
+### _Log a colorized "Hello, World!" message_
 
-Please see the [_Log a Colorized "Hello, World!" Message_](https://github.com/far-analytics/streams-logger/tree/main/examples/log_a_colorized_hello_world_message) example that demonstrates how to log to the console using the external library [Chalk](https://www.npmjs.com/package/chalk).
+Please see the [_Log a Colorized "Hello, World!" Message_](https://github.com/far-analytics/streams-logger/tree/main/examples/log_a_colorized_hello_world_message) example that demonstrates how to log to the console using the external library [Chalk](https://www.npmjs.com/package/chalk). <sup><sup>\</TypeScript\></sup></sup>
 
-### _Log a JSON object_ <sup><sup>\</TypeScript\></sup></sup>
+### _Log a JSON object_
 
-Please see the [_Log a JSON Object_](https://github.com/far-analytics/streams-logger/tree/main/examples/log_a_json_object) example that demonstrates how to log a serialized JSON object to the console.
+Please see the [_Log a JSON Object_](https://github.com/far-analytics/streams-logger/tree/main/examples/log_a_json_object) example that demonstrates how to log a serialized JSON object to the console. <sup><sup>\</TypeScript\></sup></sup>
 
-### _Log a JavaScript object_ <sup><sup>\</TypeScript\></sup></sup>
+### _Log a JavaScript object_
 
-Please see the [_Log a JavaScript Object_](https://github.com/far-analytics/streams-logger/tree/main/examples/log_a_javascript_object) example that demonstrates how to log an object to the console.
+Please see the [_Log a JavaScript Object_](https://github.com/far-analytics/streams-logger/tree/main/examples/log_a_javascript_object) example that demonstrates how to log an object to the console. <sup><sup>\</TypeScript\></sup></sup>
 
-### _Log to a file and the console_ <sup><sup>\</TypeScript\></sup></sup>
+### _Log to a file and the console_
 
-Please see the [_Log to a File and the Console_](https://github.com/far-analytics/streams-logger/tree/main/examples/log_to_a_file_and_the_console) example that demonstrates how to log to a file and the console using different `Formatters`.
+Please see the [_Log to a File and the Console_](https://github.com/far-analytics/streams-logger/tree/main/examples/log_to_a_file_and_the_console) example that demonstrates how to log to a file and the console using different `Formatters`. <sup><sup>\</TypeScript\></sup></sup>
 
-### _A network connected streams logging graph_ <sup><sup>\</TypeScript\></sup></sup>
+### _A network connected streams logging graph_
 
-Please see the [_A Network Connected **Streams** Logging Graph_](https://github.com/far-analytics/streams-logger/tree/main/examples/a_network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network.
+Please see the [_A Network Connected **Streams** Logging Graph_](https://github.com/far-analytics/streams-logger/tree/main/examples/a_network_connected_logging_graph) example that demonstrates how to connect _Streams_ logging graphs over the network. <sup><sup>\</TypeScript\></sup></sup>
 
-### _Use **Streams** in a Node.js project (without type safety)_ <sup><sup>\</Node.js\></sup></sup>
+### _Use **Streams** in a Node.js project (without type safety)_
 
-Please see the [_Use **Streams** in a Node.js Project_](https://github.com/far-analytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project _without_ type checks.
+Please see the [_Use **Streams** in a Node.js Project_](https://github.com/far-analytics/streams-logger/tree/main/examples/use_streams_in_a_nodejs_project) example that demonstrates how to use _Streams_ in a Node.js project _without_ type checks.<sup><sup>\</Node.js\></sup></sup>
 
-### _Implement a transform_ <sup><sup>\</TypeScript\></sup></sup>
+### _Implement a transform_
 
-Please see the [_Implement a Transform_](https://github.com/far-analytics/streams-logger/tree/main/examples/implement_a_transform) example that demonstrates how to implement a custom _Streams_ `Node`.
+Please see the [_Implement a Transform_](https://github.com/far-analytics/streams-logger/tree/main/examples/implement_a_transform) example that demonstrates how to implement a custom _Streams_ `Node`.<sup><sup>\</TypeScript\></sup></sup>
 
-### _Consume a socket_ <sup><sup>\</TypeScript\></sup></sup>
+### _Consume a socket_
 
-Please see the [_Consume a Socket_](https://github.com/far-analytics/streams-logger/tree/main/examples/consume_a_socket) example that demonstrates how to wrap a `net.Socket` in a _Streams_ `Node`.
+Please see the [_Consume a Socket_](https://github.com/far-analytics/streams-logger/tree/main/examples/consume_a_socket) example that demonstrates how to wrap a `net.Socket` in a _Streams_ `Node`. <sup><sup>\</TypeScript\></sup></sup>
 
 ## Formatting
 
@@ -433,7 +433,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - ingressQueueThreshold `<number>` An optional threshold for the `ingressQueue` in bytes; the socket will be paused if this threshold is exceeded.
 - streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream. You can use `DuplexOptions` to set a `highWaterMark` on the `SocketHandler`.
 
-Use a `SocketHandler` in order to connect _Streams_ graphs over the network. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-typescript) example for instructions on how to use a `SocketHandler` in order to connect _Streams_ logging graphs over the network.
+Use a `SocketHandler` in order to connect _Streams_ graphs over the network. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph) example for instructions on how to use a `SocketHandler` in order to connect _Streams_ logging graphs over the network.
 
 _public_ **socketHandler.connect(...nodes)**
 
@@ -593,7 +593,7 @@ Use `SyslogLevel` to set the level in the options passed to `Logger`, `Filter`, 
 
 ## Using a Socket Handler
 
-_Streams_ uses Node.js streams for message propagation. Node.js represents sockets as streams; hence, sockets are a natural extension of a _Streams_ logging graph. For example, you may choose to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-typescript) example for a working implementation.
+_Streams_ uses Node.js streams for message propagation. Node.js represents sockets as streams; hence, sockets are a natural extension of a _Streams_ logging graph. For example, you may choose to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph) example for a working implementation.
 
 ### Payload size limit
 
