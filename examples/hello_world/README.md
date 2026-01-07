@@ -1,4 +1,4 @@
-# _An Instance of "Hello, World!"_
+# _"Hello, World!"_
 
 ## Introduction
 

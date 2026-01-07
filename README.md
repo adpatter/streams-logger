@@ -120,7 +120,7 @@ Output
 
 ## Examples
 
-### _An instance of logging "Hello, World!"_ <sup><sup>\</TypeScript\></sup></sup>
+### _"Hello, World!"_ <sup><sup>\</TypeScript\></sup></sup>
 
 Please see the [Usage](#usage) section above or the [_Hello, World!_](https://github.com/far-analytics/streams-logger/tree/main/examples/hello_world) example for a working implementation.
 
