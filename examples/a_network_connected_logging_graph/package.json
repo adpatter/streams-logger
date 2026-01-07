@@ -1,5 +1,5 @@
 {
-  "name": "network_connected_logging_graph",
+  "name": "a_network_connected_logging_graph",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/index.js",

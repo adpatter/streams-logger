@@ -97,7 +97,7 @@ git clone https://github.com/far-analytics/streams-logger.git
 #### Change directory into the relevant example directory.
 
 ```bash
-cd streams-logger/examples/network_connected_logging_graph
+cd streams-logger/examples/a_network_connected_logging_graph
 ```
 
 #### Install the example dependencies.
