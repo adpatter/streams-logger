@@ -1,5 +1,5 @@
 {
-  "name": "hello_world_object",
+  "name": "log_a_json_object",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/index.js",

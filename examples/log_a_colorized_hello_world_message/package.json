@@ -1,5 +1,5 @@
 {
-  "name": "hello_world_json",
+  "name": "log_a_colorized_hello_world_message",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/index.js",
@@ -17,6 +17,7 @@
     "node": ">=18.18.0"
   },
   "dependencies": {
+    "chalk": "^5.6.2",
     "streams-logger": "^3.0.0"
   },
   "type": "module",

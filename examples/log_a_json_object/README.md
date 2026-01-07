@@ -74,7 +74,7 @@ git clone https://github.com/far-analytics/streams-logger.git
 #### Change directory into the relevant example directory.
 
 ```bash
-cd streams-logger/examples/hello_world_json
+cd streams-logger/examples/log_a_json_object
 ```
 
 #### Install the example dependencies.

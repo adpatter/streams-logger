@@ -126,15 +126,15 @@ Please see the [Usage](#usage) section above or the [_Hello, World!_](https://gi
 
 ### _Log a colorized "Hello, World!" message_ <sup><sup>\</TypeScript\></sup></sup>
 
-Please see the [_Log a Colorized "Hello, World!" Message_](https://github.com/far-analytics/streams-logger/tree/main/examples/hello_world_colorize) example that demonstrates how to log to the console using the external library [Chalk](https://www.npmjs.com/package/chalk).
+Please see the [_Log a Colorized "Hello, World!" Message_](https://github.com/far-analytics/streams-logger/tree/main/examples/log_a_colorized_hello_world_message) example that demonstrates how to log to the console using the external library [Chalk](https://www.npmjs.com/package/chalk).
 
 ### _Log a JSON object_ <sup><sup>\</TypeScript\></sup></sup>
 
-Please see the [_Log a JSON Object_](https://github.com/far-analytics/streams-logger/tree/main/examples/hello_world_json) example that demonstrates how to log a serialized JSON object to the console.
+Please see the [_Log a JSON Object_](https://github.com/far-analytics/streams-logger/tree/main/examples/log_a_json_object) example that demonstrates how to log a serialized JSON object to the console.
 
 ### _Log a JavaScript object_ <sup><sup>\</TypeScript\></sup></sup>
 
-Please see the [_Log a JavaScript Object_](https://github.com/far-analytics/streams-logger/tree/main/examples/hello_world_object) example that demonstrates how to log an object to the console.
+Please see the [_Log a JavaScript Object_](https://github.com/far-analytics/streams-logger/tree/main/examples/log_a_javascript_object) example that demonstrates how to log an object to the console.
 
 ### _Log to a file and the console_ <sup><sup>\</TypeScript\></sup></sup>
 

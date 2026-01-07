@@ -91,7 +91,7 @@ git clone https://github.com/far-analytics/streams-logger.git
 #### Change directory into the relevant example directory.
 
 ```bash
-cd streams-logger/examples/hello_world_colorize
+cd streams-logger/examples/log_a_colorized_hello_world_message
 ```
 
 #### Install the example dependencies.
