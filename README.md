@@ -13,11 +13,11 @@ _Streams_ is an intuitive logger built on native Node.js streams. You can use th
 - **A _zero-dependency_ logging framework based on native Node.js streams.**
 - A library of commonly used logging components: [Logger](#the-logger-class), [Formatter](#the-formatter-class), [Filter](#the-filter-class), [ConsoleHandler](#the-consolehandler-class), [RotatingFileHandler](#the-rotatingfilehandler-class), and [SocketHandler](#the-sockethandler-class).
 - A rich selection of [contextual data](#log-context-properties) (e.g., module name, function name, line number, etc.) for augmenting log messages.
-- Log your message in any format you choose including [JSON](#an-instance-of-logging-a-serialized-json-object-hello-world-message-typescript) and [colorized](#an-instance-of-logging-a-colorized-hello-world-message-typescript) output formats.
+- Log your message in any format you choose including [JSON](#an-instance-of-logging-a-serialized-json-object-hello-world-message) and [colorized](#an-instance-of-logging-a-colorized-hello-world-message) output formats.
 - A type-safe graph-like API pattern for constructing sophisticated [logging graphs](#graph-api-pattern).
 - Consume any native Node.js Readable, Writable, Duplex, or Transform stream and add it to your graph.
 - Error handling and selective detachment of inoperable graph components.
-- Use _Streams_ in your Node.js project, [without type safety](#use-streams-in-a-nodejs-project-without-type-safety-nodejs), or take advantage of the TypeScript type definitions.
+- Use _Streams_ in your Node.js project, [without type safety](#use-streams-in-a-nodejs-project-without-type-safety), or take advantage of the TypeScript type definitions.
 
 ## Table of contents
 
@@ -128,7 +128,7 @@ Please see the [Usage](#usage) section above or the ["Hello, World!"](https://gi
 
 Please see the ["An Instance of Logging a Colorized "Hello, World!" Message](https://github.com/far-analytics/streams-logger/tree/main/examples/hello_world_colorize) example that demonstrates how to log to the console using the external library [Chalk](https://www.npmjs.com/package/chalk).
 
-### _An instance of logging a serialized JSON object "Hello, World" message_ <sup><sup>\</TypeScript\></sup></sup>
+### _An instance of logging a serialized JSON object "Hello, World!" message_ <sup><sup>\</TypeScript\></sup></sup>
 
 Please see the ["An Instance of Logging a Serialized JSON Object "Hello, World!" Message](https://github.com/far-analytics/streams-logger/tree/main/examples/hello_world_json) example that demonstrates how to log a serialized JSON object to the console.
 
@@ -147,6 +147,14 @@ Please see the [_Network Connected **Streams** Logging Graph_](https://github.co
 ### _Use **Streams** in a Node.js project (without type safety)_ <sup><sup>\</Node.js\></sup></sup>
 
 Please see the [_Use **Streams** in a Node.js Project_](https://github.com/far-analytics/streams-logger/tree/main/examples/use_streams_in_a_node_project) example that demonstrates how to use _Streams_ in a Node.js project _without_ type checks.
+
+### _Implement a transform_ <sup><sup>\</TypeScript\></sup></sup>
+
+Please see the [_Implement a Transform_](https://github.com/far-analytics/streams-logger/tree/main/examples/implement_a_transform) example that demonstrates how to implement a custom _Streams_ `Node`.
+
+### _Consume a socket_ <sup><sup>\</TypeScript\></sup></sup>
+
+Please see the [_Consume a Socket_](https://github.com/far-analytics/streams-logger/tree/main/examples/consume_a_socket) example that demonstrates how to wrap a `net.Socket` in a _Streams_ `Node`.
 
 ## Formatting
 
@@ -329,7 +337,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - format `(record: LogContext<MessageInT, SyslogLevelT>): Promise<MessageOutT> | MessageOutT` A function that will format and serialize the `LogContext<MessageInT, SyslogLevelT>`. Please see [Formatting](#formatting) for how to implement a format function.
 - streamOptions `<stream.TransformOptions>` Optional options to be passed to the stream. You can use `TransformOptions` to set a `highWaterMark` on the `Formatter`.
 
-Use a `Formatter` in order to specify how your log message will be formatted prior to forwarding it to the Handler(s). A [`LogContext`](#the-LogContext-interface) object is created that contains information about the environment at the time of the logging call. The `LogContext` is passed as the single argument to `format` function.
+Use a `Formatter` in order to specify how your log message will be formatted prior to forwarding it to the Handler(s). A [`LogContext`](#the-logcontext-interface) object is created that contains information about the environment at the time of the logging call. The `LogContext` is passed as the single argument to `format` function.
 
 _public_ **formatter.connect(...nodes)**
 
@@ -425,7 +433,7 @@ Set the log level. Must be one of `SyslogLevel`.
   - ingressQueueThreshold `<number>` An optional threshold for the `ingressQueue` in bytes; the socket will be paused if this threshold is exceeded.
 - streamOptions `<stream.DuplexOptions>` Optional options to be passed to the stream. You can use `DuplexOptions` to set a `highWaterMark` on the `SocketHandler`.
 
-Use a `SocketHandler` in order to connect _Streams_ graphs over the network. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-typescript) example for instructions on how to use a `SocketHandler` in order to connect _Streams_ logging graphs over the network.
+Use a `SocketHandler` in order to connect _Streams_ graphs over the network. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph) example for instructions on how to use a `SocketHandler` in order to connect _Streams_ logging graphs over the network.
 
 _public_ **socketHandler.connect(...nodes)**
 
@@ -456,7 +464,7 @@ Set the log level. Must be one of `SyslogLevel`.
 
 A `LogContext` is a plain object created each time a message is logged at (or below) the level set on the `Logger`. It contains information about the process and environment at the time of the logging call. All _Streams_ `Node`s take a `LogContext` as an input and emit a `LogContext` as an output.
 
-The `LogContext` is passed as the single argument to the [format function](#formatting) of the `Formatter`; information about the environment can be extracted from the `LogContext` in order to format the logged message. The following properties will be available to the `format` function depending on the setting of `Config.captureStackTrace` and `Config.captureISOTime`. Please see the [Log Context Data](#log-context-data) table for details.
+The `LogContext` is passed as the single argument to the [format function](#formatting) of the `Formatter`; information about the environment can be extracted from the `LogContext` in order to format the logged message. The following properties will be available to the `format` function depending on the setting of `Config.captureStackTrace` and `Config.captureISOTime`. Please see the [Log context properties](#log-context-properties) table for details.
 
 _public_ **logContext.col**
 
@@ -585,7 +593,7 @@ Use `SyslogLevel` to set the level in the options passed to `Logger`, `Filter`, 
 
 ## Using a Socket Handler
 
-_Streams_ uses Node.js streams for message propagation. Node.js represents sockets as streams; hence, sockets are a natural extension of a _Streams_ logging graph. For example, you may choose to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph-typescript) example for a working implementation.
+_Streams_ uses Node.js streams for message propagation. Node.js represents sockets as streams; hence, sockets are a natural extension of a _Streams_ logging graph. For example, you may choose to use a `ConsoleHandler` locally and log to a `RotatingFileHandler` on a remote server. Please see the [_A Network Connected **Streams** Logging Graph_](#a-network-connected-streams-logging-graph) example for a working implementation.
 
 ### Payload size limit
 
