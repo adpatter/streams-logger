@@ -114,4 +114,4 @@ npm start
 
 ##### Output
 
-![Output](https://raw.githubusercontent.com/far-analytics/streams-logger/refs/heads/main/examples/hello_world_colorize/output.png)
+![Output](https://raw.githubusercontent.com/far-analytics/streams-logger/refs/heads/main/examples/log_a_colorized_hello_world_message/output.png)
