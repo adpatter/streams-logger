@@ -47,7 +47,7 @@ git clone https://github.com/far-analytics/streams-logger.git
 #### Change directory into the relevant example directory.
 
 ```bash
-cd streams-logger/examples/use_streams_in_a_node_project
+cd streams-logger/examples/use_streams_in_a_nodejs_project
 ```
 
 #### Install the example dependencies.
