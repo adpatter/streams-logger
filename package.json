@@ -49,5 +49,6 @@
     "streams",
     "streams-logger",
     "winston"
-  ]
+  ],
+  "type": "commonjs"
 }
