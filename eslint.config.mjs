@@ -1,5 +1,3 @@
-// @ts-check
-
 import eslint from "@eslint/js";
 import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
@@ -13,7 +11,7 @@ export default defineConfig([
   { ignores: ["**/dist"] },
   {
     languageOptions: {
-      parserOptions: { project: ["./tsconfig.json", "./tsconfig.eslint.json"] },
+      parserOptions: { project: ["./tsconfig.eslint.json"] },
       globals: { ...globals.node },
     },
   },
@@ -23,14 +21,11 @@ export default defineConfig([
     },
   },
   {
-    files: ["**/*.ts"],
+    files: ["**/*.ts", "**/*.js", "**/*.mjs", "**/*.cjs"],
     rules: {
       quotes: ["error", "double", { avoidEscape: true, allowTemplateLiterals: true }],
       "@stylistic/semi": ["error", "always"],
+      "@typescript-eslint/no-require-imports": ["off"],
     },
-  },
-  {
-    files: ["**/*.js"],
-    rules: { "@typescript-eslint/no-require-imports": ["off"] },
   },
 ]);

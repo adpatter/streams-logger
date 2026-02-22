@@ -1,9 +1,18 @@
 {
   "compilerOptions": {
-    "types": ["@types/node"],
+    "types": ["node"],
     "noEmit": true,
-    "allowJs": true
+    "allowJs": true,
+    "checkJs": true,
+    "module": "node16",
+    "strict": true
   },
-  "extends": "./tsconfig.json",
-  "include": ["examples/**/*.ts", "examples/**/*.js", "test/**/*.ts", "test/**/*.js", "eslint.config.mjs"]
+  "include": [
+    "src/**/*.ts",
+    "examples/**/*.ts",
+    "examples/**/*.js",
+    "test/**/*.ts",
+    "test/**/*.js",
+    "eslint.config.mjs"
+  ]
 }
